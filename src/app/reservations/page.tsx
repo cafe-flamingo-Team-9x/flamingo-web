@@ -15,7 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { Clock } from "lucide-react";
 
 export default function Reservations() {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -106,24 +108,25 @@ export default function Reservations() {
       </section>
 
       {/* Reservation Form Section */}
-      <section className="py-16 bg-background">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-8 max-w-6xl mx-auto">
             {/* Form */}
             <Card className="hover-lift hover:shadow-elegant transition-all duration-300">
               <CardHeader>
-                <CardTitle className="text-2xl text-foreground">
+                <CardTitle className="text-3xl text-foreground">
                   Book Your Table
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="name">Name *</Label>
                       <Input
                         id="name"
                         name="name"
+                        placeholder="John Doe"
                         value={formData.name}
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
@@ -131,12 +134,13 @@ export default function Reservations() {
                         required
                       />
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="email">Email *</Label>
                       <Input
                         id="email"
                         name="email"
                         type="email"
+                        placeholder="john@example.com"
                         value={formData.email}
                         onChange={(e) =>
                           setFormData({ ...formData, email: e.target.value })
@@ -144,11 +148,12 @@ export default function Reservations() {
                         required
                       />
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="phone">Phone *</Label>
                       <Input
                         id="phone"
                         name="phone"
+                        placeholder="+94 77 123 4567"
                         value={formData.phone}
                         onChange={(e) =>
                           setFormData({ ...formData, phone: e.target.value })
@@ -156,7 +161,7 @@ export default function Reservations() {
                         required
                       />
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="guests">Number of Guests *</Label>
                       <Input
                         id="guests"
@@ -164,6 +169,7 @@ export default function Reservations() {
                         type="number"
                         min="1"
                         max="20"
+                        placeholder="2"
                         value={formData.guests}
                         onChange={(e) =>
                           setFormData({ ...formData, guests: e.target.value })
@@ -171,7 +177,7 @@ export default function Reservations() {
                         required
                       />
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="time">Time *</Label>
                       <Select
                         value={formData.time}
@@ -192,7 +198,7 @@ export default function Reservations() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="occasion">Occasion</Label>
                       <Select
                         value={formData.occasion}
@@ -213,16 +219,17 @@ export default function Reservations() {
                       </Select>
                     </div>
                   </div>
-                  <div>
+                  <div className="space-y-2">
                     <Label htmlFor="notes">Special Requests</Label>
-                    <Input
+                    <Textarea
                       id="notes"
                       name="notes"
+                      placeholder="Any dietary restrictions or special requests?"
                       value={formData.notes}
                       onChange={(e) =>
                         setFormData({ ...formData, notes: e.target.value })
                       }
-                      placeholder="Any dietary restrictions or special requests?"
+                      className="min-h-[100px]"
                     />
                   </div>
                   <Button
@@ -236,8 +243,9 @@ export default function Reservations() {
               </CardContent>
             </Card>
 
-            {/* Calendar */}
-            <div>
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Calendar */}
               <Card className="hover-lift hover:shadow-elegant transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="text-2xl text-foreground">
@@ -260,27 +268,28 @@ export default function Reservations() {
               </Card>
 
               {/* Opening Hours */}
-              <Card className="mt-6 hover-lift hover:shadow-elegant transition-all duration-300">
+              <Card className="hover-lift hover:shadow-elegant transition-all duration-300">
                 <CardHeader>
-                  <CardTitle className="text-2xl text-foreground">
+                  <CardTitle className="text-2xl text-foreground flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-primary" />
                     Opening Hours
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
-                  <div className="space-y-2">
-                    <p>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
                       <span className="font-medium text-foreground">
-                        Monday - Friday:
-                      </span>{" "}
-                      11:00 AM - 10:00 PM
-                    </p>
-                    <p>
+                        Monday - Friday
+                      </span>
+                      <span>11:00 AM - 10:00 PM</span>
+                    </div>
+                    <div className="flex justify-between">
                       <span className="font-medium text-foreground">
-                        Saturday - Sunday:
-                      </span>{" "}
-                      10:00 AM - 11:00 PM
-                    </p>
-                    <p className="text-sm mt-4">
+                        Saturday - Sunday
+                      </span>
+                      <span>10:00 AM - 11:00 PM</span>
+                    </div>
+                    <p className="text-sm mt-4 pt-3 border-t">
                       * Last reservation taken 1 hour before closing
                     </p>
                   </div>

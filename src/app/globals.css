@@ -1,3 +1,6 @@
+@import 'tailwindcss';
+@plugin "tailwindcss-animate";
+
 :root {
     --background: oklch(1 0 0);
     --foreground: oklch(0.2156 0 0);
@@ -31,9 +34,6 @@
     --sidebar-accent-foreground: oklch(0.5347 0.2145 358.1411);
     --sidebar-border: oklch(0.8452 0 0);
     --sidebar-ring: oklch(0.6123 0.2461 358.4838);
-    --font-sans: Inter, sans-serif;
-    --font-serif: Playfair Display, serif;
-    --font-mono: Fira Code, monospace;
     --radius: 0.5rem;
     --shadow-x: 0rem;
     --shadow-y: 0.25rem;
@@ -86,9 +86,6 @@
     --sidebar-accent-foreground: oklch(0.9234 0 0);
     --sidebar-border: oklch(0.3211 0 0);
     --sidebar-ring: oklch(0.6123 0.2461 358.4838);
-    --font-sans: Inter, sans-serif;
-    --font-serif: Playfair Display, serif;
-    --font-mono: Fira Code, monospace;
     --radius: 0.5rem;
     --shadow-x: 0rem;
     --shadow-y: 0.25rem;
@@ -140,9 +137,8 @@
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
 
-    --font-sans: var(--font-sans);
-    --font-mono: var(--font-mono);
-    --font-serif: var(--font-serif);
+    --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
@@ -166,6 +162,83 @@
     --tracking-widest: calc(var(--tracking-normal) + 0.1em);
 }
 
-body {
-    letter-spacing: var(--tracking-normal);
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground antialiased;
+        font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        letter-spacing: var(--tracking-normal);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-weight: 700;
+    }
+}
+
+@layer utilities {
+    .font-heading {
+        font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .bg-gradient-dark {
+        background: linear-gradient(135deg, rgba(7, 12, 24, 0.96) 0%, rgba(17, 25, 40, 0.92) 100%);
+    }
+
+    .bg-gradient-soft {
+        background: linear-gradient(135deg, rgba(252, 231, 243, 0.9) 0%, rgba(248, 250, 255, 1) 100%);
+    }
+
+    .bg-gradient-hero {
+        background: linear-gradient(135deg, rgba(236, 72, 153, 0.95), rgba(249, 115, 22, 0.9));
+    }
+
+    .text-gradient-accent {
+        @apply bg-clip-text text-transparent;
+        background-image: linear-gradient(120deg, rgba(236, 72, 153, 1), rgba(249, 115, 22, 1));
+    }
+
+    .hover-lift {
+        transition: transform 200ms ease, box-shadow 200ms ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-6px);
+    }
+
+    .shadow-pink-glow {
+        box-shadow: 0 18px 45px rgba(236, 72, 153, 0.32);
+    }
+
+    .shadow-soft {
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+    }
+
+    .shadow-elegant {
+        box-shadow: 0 24px 40px -12px rgba(15, 23, 42, 0.3);
+    }
+
+    .animate-fade-in {
+        animation: fade-in-rise 700ms ease-out both;
+    }
+}
+
+@keyframes fade-in-rise {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

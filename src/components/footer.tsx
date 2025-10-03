@@ -83,9 +83,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-white/10 mt-8 pt-8 text-center">
-          <p className="text-sm text-white/60">
-            © {new Date().getFullYear()} Flamingo Restaurant. All rights reserved.
-          </p>
+          <p className="text-sm text-white/60">© {new Date().getFullYear()} Flamingo Restaurant.</p>
         </div>
       </div>
     </footer>
