@@ -7,6 +7,7 @@ import { signIn } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   Card,
   CardContent,
@@ -16,6 +17,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { AlertTriangle } from 'lucide-react';
 
 const errorMessages: Record<string, string> = {
   google:
@@ -31,6 +33,8 @@ const errorMessages: Record<string, string> = {
   EmailSignin: 'Email sign-in is disabled for this account.',
   CredentialsSignin: 'Invalid credentials. Please try again.',
   AccessDenied: 'You do not have access to this application.',
+  not_admin:
+    'This Google account is not authorized for the Cafe Flamingo admin dashboard.',
   Verification: 'The sign-in link is no longer valid. Request a new one.',
 };
 
@@ -113,6 +117,24 @@ export default function AdminLoginPage() {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
+          {errorMessage && (
+            <Alert
+              variant="destructive"
+              aria-live="assertive"
+              className="border-destructive/60 bg-destructive/10 text-destructive"
+            >
+              <AlertTriangle className="h-4 w-4" aria-hidden="true" />
+              <AlertTitle>Access denied</AlertTitle>
+              <AlertDescription className="text-sm text-destructive">
+                {errorMessage}
+                {errorDescription ? (
+                  <span className="mt-1 block text-xs text-destructive/90">
+                    {errorDescription}
+                  </span>
+                ) : null}
+              </AlertDescription>
+            </Alert>
+          )}
           <Button
             type="button"
             className={cn('w-full gap-2')}

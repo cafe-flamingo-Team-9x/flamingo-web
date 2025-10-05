@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import { toast } from 'sonner';
 
 import { AdminSidebar, AdminSidebarMobile } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
@@ -24,14 +25,27 @@ interface AdminLayoutProps {
 }
 
 export default function ProtectedAdminLayout({ children }: AdminLayoutProps) {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
+  const hasRedirectedRef = React.useRef(false);
 
   React.useEffect(() => {
     if (status === 'unauthenticated') {
       router.replace('/admin/login');
     }
   }, [status, router]);
+
+  React.useEffect(() => {
+    if (
+      status === 'authenticated' &&
+      session?.user?.isAdmin === false &&
+      !hasRedirectedRef.current
+    ) {
+      hasRedirectedRef.current = true;
+      toast.error('Your account is not authorized for admin access.');
+      router.replace('/admin/login?error=not_admin');
+    }
+  }, [session?.user?.isAdmin, status, router]);
 
   if (status === 'loading') {
     return (
@@ -46,6 +60,17 @@ export default function ProtectedAdminLayout({ children }: AdminLayoutProps) {
 
   if (status === 'unauthenticated') {
     return null;
+  }
+
+  if (status === 'authenticated' && session?.user?.isAdmin === false) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-muted/10">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+          Redirecting…
+        </div>
+      </div>
+    );
   }
 
   return (
