@@ -1,3 +1,8 @@
+'use client';
+
+import { useEffect } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 import type { LucideIcon } from 'lucide-react';
 import { Calendar, Menu as MenuIcon, MessageCircle, Users } from 'lucide-react';
 
@@ -40,6 +45,28 @@ const STAT_SECTIONS: StatSection[] = [
 ];
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (!searchParams) return;
+    const loginStatus = searchParams.get('login');
+    if (!loginStatus) return;
+
+    if (loginStatus === 'success') {
+      toast.success('Signed in successfully. Welcome back!');
+    }
+
+    const nextParams = new URLSearchParams(searchParams.toString());
+    nextParams.delete('login');
+
+    const nextPath = `${pathname}${
+      nextParams.size ? `?${nextParams.toString()}` : ''
+    }`;
+    router.replace(nextPath, { scroll: false });
+  }, [pathname, router, searchParams]);
+
   return (
     <section className="space-y-8">
       <div className="space-y-2">
