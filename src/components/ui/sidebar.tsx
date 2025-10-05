@@ -2,7 +2,8 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { Slot } from '@radix-ui/react-slot';
 import { VariantProps, cva } from 'class-variance-authority';
@@ -19,6 +20,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
+import { toast } from 'sonner';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { useAdminSidebar } from '@/lib/sidebar-context';
@@ -802,21 +804,43 @@ function AdminSidebarContent({
   onNavigate,
 }: AdminSidebarContentProps) {
   const pathname = usePathname();
-  const router = useRouter();
+  const { data: session, status } = useSession();
 
   const activeHref = React.useMemo(() => {
     return ADMIN_NAV_ITEMS.find((item) => pathname?.startsWith(item.href))
       ?.href;
   }, [pathname]);
 
-  const handleLogout = React.useCallback(() => {
-    if (typeof window !== 'undefined') {
-      window.localStorage.removeItem('admin-auth');
-    }
+  const userName = React.useMemo(() => {
+    return session?.user?.name?.trim() || 'Admin User';
+  }, [session?.user?.name]);
 
+  const userEmail = React.useMemo(() => {
+    return session?.user?.email || 'Administrator';
+  }, [session?.user?.email]);
+
+  const userInitials = React.useMemo(() => {
+    if (!session?.user?.name) return null;
+    const parts = session.user.name
+      .split(' ')
+      .filter(Boolean)
+      .map((part) => part[0]?.toUpperCase())
+      .join('');
+    return parts.slice(0, 2) || null;
+  }, [session?.user?.name]);
+
+  const userImage = session?.user?.image ?? undefined;
+  const isSessionLoading = status === 'loading';
+
+  const handleLogout = React.useCallback(async () => {
     onNavigate?.();
-    router.replace('/');
-  }, [router, onNavigate]);
+    try {
+      await signOut({ callbackUrl: '/admin/login' });
+    } catch (error) {
+      console.error('Failed to sign out', error);
+      toast.error('We could not sign you out. Please try again.');
+    }
+  }, [onNavigate]);
 
   return (
     <div className="flex h-full flex-col bg-background">
@@ -908,9 +932,20 @@ function AdminSidebarContent({
               aria-label={collapsed ? 'Open user menu' : undefined}
             >
               <Avatar className="h-9 w-9">
-                <AvatarImage src="https://i.pravatar.cc/40" alt="Admin User" />
+                {userImage ? (
+                  <AvatarImage
+                    src={userImage}
+                    alt={userName}
+                    referrerPolicy="no-referrer"
+                    crossOrigin="anonymous"
+                  />
+                ) : null}
                 <AvatarFallback>
-                  <User className="h-4 w-4" aria-hidden="true" />
+                  {userInitials ? (
+                    <span className="text-xs font-medium">{userInitials}</span>
+                  ) : (
+                    <User className="h-4 w-4" aria-hidden="true" />
+                  )}
                 </AvatarFallback>
               </Avatar>
               <div
@@ -922,17 +957,21 @@ function AdminSidebarContent({
                     : 'ml-1 w-auto opacity-100'
                 )}
               >
-                <span className="text-sm font-semibold">Admin User</span>
-                <span className="text-xs text-secondary">Administrator</span>
+                <span className="text-sm font-semibold">
+                  {isSessionLoading ? 'Loading…' : userName}
+                </span>
+                <span className="text-xs text-secondary">
+                  {isSessionLoading ? 'Please wait' : userEmail}
+                </span>
               </div>
-              {collapsed ? <span className="sr-only">Admin User</span> : null}
+              {collapsed ? <span className="sr-only">{userName}</span> : null}
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuItem
-              onSelect={(event) => {
+              onSelect={async (event) => {
                 event.preventDefault();
-                handleLogout();
+                await handleLogout();
               }}
               className="gap-2 text-sm"
             >
