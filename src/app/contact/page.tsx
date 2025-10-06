@@ -46,7 +46,9 @@ export default function Contact() {
                       <div>
                         <p className="font-semibold text-foreground mb-1">Location</p>
                         <p className="text-muted-foreground">Piliyandala, Sri Lanka</p>
-                        <p className="text-sm text-muted-foreground">Opposite City Mall, next to Central Bank branch</p>
+                        <p className="text-sm text-muted-foreground">
+                          Opposite City Mall, next to Central Bank branch
+                        </p>
                       </div>
                     </div>
 
@@ -57,7 +59,9 @@ export default function Contact() {
                       <div>
                         <p className="font-semibold text-foreground mb-1">Phone</p>
                         <p className="text-muted-foreground">+94 77 123 4567</p>
-                        <p className="text-sm text-muted-foreground">Ask for Sameera, our reservations lead</p>
+                        <p className="text-sm text-muted-foreground">
+                          Ask for Sameera, our reservations lead
+                        </p>
                       </div>
                     </div>
 
@@ -78,8 +82,12 @@ export default function Contact() {
                       </div>
                       <div>
                         <p className="font-semibold text-foreground mb-1">Opening Hours</p>
-                        <p className="text-muted-foreground">Monday - Friday: 11:00 AM – 10:00 PM</p>
-                        <p className="text-muted-foreground">Saturday - Sunday: 10:00 AM – 11:00 PM</p>
+                        <p className="text-muted-foreground">
+                          Monday - Friday: 11:00 AM – 10:00 PM
+                        </p>
+                        <p className="text-muted-foreground">
+                          Saturday - Sunday: 10:00 AM – 11:00 PM
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -89,8 +97,9 @@ export default function Contact() {
                   <CardContent className="p-6">
                     <h3 className="font-semibold text-foreground mb-2">Hosting a Private Event?</h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
-                      Share your celebration details and we&apos;ll curate a bespoke dining plan within 24 hours.
-                      We offer tailored menus, dedicated hosting, and a warm ambiance perfect for any occasion.
+                      Share your celebration details and we&apos;ll curate a bespoke dining plan
+                      within 24 hours. We offer tailored menus, dedicated hosting, and a warm
+                      ambiance perfect for any occasion.
                     </p>
                     <p className="text-primary text-sm font-medium mt-3">
                       Email us at events@flamingo.lk

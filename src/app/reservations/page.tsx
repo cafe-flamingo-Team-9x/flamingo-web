@@ -1,6 +1,8 @@
 "use client";
 
+import { Clock } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import Footer from "@/components/footer";
 import Navigation from "@/components/navigation";
 import { Button } from "@/components/ui/button";
@@ -16,8 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import { Clock } from "lucide-react";
 
 export default function Reservations() {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -72,12 +72,9 @@ export default function Reservations() {
       return;
     }
 
-    toast.success(
-      "Reservation request submitted! We'll confirm via email shortly.",
-      {
-        description: "Check your email for confirmation details.",
-      }
-    );
+    toast.success("Reservation request submitted! We'll confirm via email shortly.", {
+      description: "Check your email for confirmation details.",
+    });
 
     setFormData({
       name: "",
@@ -114,9 +111,7 @@ export default function Reservations() {
             {/* Form */}
             <Card className="hover-lift hover:shadow-elegant transition-all duration-300">
               <CardHeader>
-                <CardTitle className="text-3xl text-foreground">
-                  Book Your Table
-                </CardTitle>
+                <CardTitle className="text-3xl text-foreground">Book Your Table</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -128,9 +123,7 @@ export default function Reservations() {
                         name="name"
                         placeholder="John Doe"
                         value={formData.name}
-                        onChange={(e) =>
-                          setFormData({ ...formData, name: e.target.value })
-                        }
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         required
                       />
                     </div>
@@ -142,9 +135,7 @@ export default function Reservations() {
                         type="email"
                         placeholder="john@example.com"
                         value={formData.email}
-                        onChange={(e) =>
-                          setFormData({ ...formData, email: e.target.value })
-                        }
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         required
                       />
                     </div>
@@ -155,9 +146,7 @@ export default function Reservations() {
                         name="phone"
                         placeholder="+94 77 123 4567"
                         value={formData.phone}
-                        onChange={(e) =>
-                          setFormData({ ...formData, phone: e.target.value })
-                        }
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         required
                       />
                     </div>
@@ -171,9 +160,7 @@ export default function Reservations() {
                         max="20"
                         placeholder="2"
                         value={formData.guests}
-                        onChange={(e) =>
-                          setFormData({ ...formData, guests: e.target.value })
-                        }
+                        onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
                         required
                       />
                     </div>
@@ -181,9 +168,7 @@ export default function Reservations() {
                       <Label htmlFor="time">Time *</Label>
                       <Select
                         value={formData.time}
-                        onValueChange={(value) =>
-                          setFormData({ ...formData, time: value })
-                        }
+                        onValueChange={(value) => setFormData({ ...formData, time: value })}
                         required
                       >
                         <SelectTrigger>
@@ -202,9 +187,7 @@ export default function Reservations() {
                       <Label htmlFor="occasion">Occasion</Label>
                       <Select
                         value={formData.occasion}
-                        onValueChange={(value) =>
-                          setFormData({ ...formData, occasion: value })
-                        }
+                        onValueChange={(value) => setFormData({ ...formData, occasion: value })}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select occasion" />
@@ -226,9 +209,7 @@ export default function Reservations() {
                       name="notes"
                       placeholder="Any dietary restrictions or special requests?"
                       value={formData.notes}
-                      onChange={(e) =>
-                        setFormData({ ...formData, notes: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                       className="min-h-[100px]"
                     />
                   </div>
@@ -248,9 +229,7 @@ export default function Reservations() {
               {/* Calendar */}
               <Card className="hover-lift hover:shadow-elegant transition-all duration-300">
                 <CardHeader>
-                  <CardTitle className="text-2xl text-foreground">
-                    Select Date
-                  </CardTitle>
+                  <CardTitle className="text-2xl text-foreground">Select Date</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Calendar
@@ -278,15 +257,11 @@ export default function Reservations() {
                 <CardContent className="text-muted-foreground">
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="font-medium text-foreground">
-                        Monday - Friday
-                      </span>
+                      <span className="font-medium text-foreground">Monday - Friday</span>
                       <span>11:00 AM - 10:00 PM</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="font-medium text-foreground">
-                        Saturday - Sunday
-                      </span>
+                      <span className="font-medium text-foreground">Saturday - Sunday</span>
                       <span>10:00 AM - 11:00 PM</span>
                     </div>
                     <p className="text-sm mt-4 pt-3 border-t">
