@@ -1,10 +1,10 @@
-#!/usr/bin/env tsx
+import { exit, stdin as input, stdout as output } from "node:process";
+import readline from "node:readline/promises";
+import { PrismaClient } from "@prisma/client";
+import "dotenv/config";
+import { validateEnv } from "@/lib/env";
 
-import 'dotenv/config';
-import { PrismaClient } from '@prisma/client';
-import { stdin as input, stdout as output, exit } from 'node:process';
-import readline from 'node:readline/promises';
-
+validateEnv(process.env);
 const prisma = new PrismaClient();
 
 type SeedArgs = {
@@ -17,18 +17,18 @@ function parseArgs(argv: string[]): SeedArgs {
   const args: SeedArgs = {};
 
   for (const raw of argv) {
-    const [key, value] = raw.split('=');
+    const [key, value] = raw.split("=");
     if (!value) continue;
 
     switch (key) {
-      case '--email':
+      case "--email":
         args.email = value;
         break;
-      case '--name':
+      case "--name":
         args.name = value;
         break;
-      case '--sync-user':
-        args.syncUser = value !== 'false';
+      case "--sync-user":
+        args.syncUser = value !== "false";
         break;
       default:
         break;
@@ -39,22 +39,19 @@ function parseArgs(argv: string[]): SeedArgs {
 }
 
 async function promptForMissing(
-  args: SeedArgs
-): Promise<Required<Pick<SeedArgs, 'email' | 'name'>>> {
+  args: SeedArgs,
+): Promise<Required<Pick<SeedArgs, "email" | "name">>> {
   const rl = readline.createInterface({ input, output });
 
   try {
-    const email =
-      args.email ?? (await rl.question('Admin email address: ')).trim();
+    const email = args.email ?? (await rl.question("Admin email address: ")).trim();
     if (!email) {
-      throw new Error('Email is required.');
+      throw new Error("Email is required.");
     }
 
-    const name =
-      args.name ??
-      (await rl.question('Admin display name (optional): ')).trim();
+    const name = args.name ?? (await rl.question("Admin display name (optional): ")).trim();
 
-    return { email, name: name.length > 0 ? name : args.name ?? '' };
+    return { email, name: name.length > 0 ? name : (args.name ?? "") };
   } finally {
     rl.close();
   }
@@ -90,13 +87,13 @@ async function main() {
     });
   }
 
-  console.info('Admin allowlist updated:', adminRecord);
+  console.info("Admin allowlist updated:", adminRecord);
 }
 
 main()
   .then(() => prisma.$disconnect())
   .catch(async (error) => {
-    console.error('Failed to seed admin:', error);
+    console.error("Failed to seed admin:", error);
     await prisma.$disconnect();
     exit(1);
   });

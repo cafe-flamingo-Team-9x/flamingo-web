@@ -1,8 +1,8 @@
-import NextAuth, { type NextAuthOptions } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
-
-import { prisma } from '@/lib/prisma';
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import NextAuth, { type NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import { getServerEnv } from "@/lib/env";
+import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
   // Configure Prisma as the database adapter
@@ -10,32 +10,25 @@ export const authOptions: NextAuthOptions = {
 
   // Configure authentication providers
   providers: [
+    // Use validated env values
     GoogleProvider({
-      clientId:
-        process.env.GOOGLE_CLIENT_ID ??
-        (() => {
-          throw new Error('GOOGLE_CLIENT_ID is not set');
-        })(),
-      clientSecret:
-        process.env.GOOGLE_CLIENT_SECRET ??
-        (() => {
-          throw new Error('GOOGLE_CLIENT_SECRET is not set');
-        })(),
+      clientId: getServerEnv().GOOGLE_CLIENT_ID,
+      clientSecret: getServerEnv().GOOGLE_CLIENT_SECRET,
     }),
   ],
 
   // Secret for signing session cookies
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: getServerEnv().NEXTAUTH_SECRET,
 
   // Session configuration
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 
   // Custom pages for sign-in
   pages: {
-    signIn: '/admin/login',
+    signIn: "/admin/login",
   },
 
   // Callbacks for extending NextAuth.js functionality
@@ -52,9 +45,9 @@ export const authOptions: NextAuthOptions = {
       if (!adminRecord) {
         console.warn(`Blocked non-admin login attempt for ${user.email}.`);
         const params = new URLSearchParams({
-          error: 'not_admin',
+          error: "not_admin",
           error_description:
-            'The Google account you used is not authorized for the Cafe Flamingo admin dashboard.',
+            "The Google account you used is not authorized for the Cafe Flamingo admin dashboard.",
         });
         return `/admin/login?${params.toString()}`;
       }
@@ -69,7 +62,7 @@ export const authOptions: NextAuthOptions = {
             },
           })
           .catch((error) => {
-            console.warn('Failed to sync admin flag on user record.', error);
+            console.warn("Failed to sync admin flag on user record.", error);
           });
       }
 
@@ -83,9 +76,9 @@ export const authOptions: NextAuthOptions = {
           session.user.id = token.id;
         }
         session.user.isAdmin = Boolean(token?.isAdmin);
-        if (token && 'picture' in token && token.picture) {
+        if (token && "picture" in token && token.picture) {
           session.user.image = token.picture as string;
-        } else if (token && 'image' in token && token.image) {
+        } else if (token && "image" in token && token.image) {
           session.user.image = token.image as string;
         }
       }
@@ -105,8 +98,7 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
-      const emailFromToken =
-        typeof token.email === 'string' ? token.email : undefined;
+      const emailFromToken = typeof token.email === "string" ? token.email : undefined;
 
       if (emailFromToken) {
         const adminRecord = await prisma.admin.findUnique({
@@ -126,10 +118,7 @@ export const authOptions: NextAuthOptions = {
               },
             })
             .catch((error) => {
-              console.warn(
-                'Failed to update user admin flag during JWT callback.',
-                error
-              );
+              console.warn("Failed to update user admin flag during JWT callback.", error);
             });
         }
       } else if (token.isAdmin === undefined) {
@@ -141,7 +130,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   // Debug mode for development
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);

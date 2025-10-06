@@ -16,7 +16,10 @@ const MENU_TABS = [
   { value: "beverages", label: "Beverages" },
 ];
 
-const MENU_DATA: Record<string, Array<{ name: string; description: string; price: string; image?: string | null }>> = {
+const MENU_DATA: Record<
+  string,
+  Array<{ name: string; description: string; price: string; image?: string | null }>
+> = {
   starters: [
     {
       name: "Bruschetta Trio",
@@ -170,7 +173,6 @@ export default function Menu() {
               </TabsContent>
             ))}
           </Tabs>
-
         </div>
       </section>
 

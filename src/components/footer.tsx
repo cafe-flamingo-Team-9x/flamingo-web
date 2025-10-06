@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -10,7 +10,8 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-semibold mb-4 text-primary">Flamingo</h3>
             <p className="text-sm text-white/70 leading-relaxed">
-              Experience exceptional dining in Piliyandala. Casual elegance meets delicious cuisine with our BYOB policy.
+              Experience exceptional dining in Piliyandala. Casual elegance meets delicious cuisine
+              with our BYOB policy.
             </p>
           </div>
 
@@ -24,17 +25,26 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/reservations" className="text-white/70 hover:text-primary transition-colors">
+                <Link
+                  href="/reservations"
+                  className="text-white/70 hover:text-primary transition-colors"
+                >
                   Reservations
                 </Link>
               </li>
               <li>
-                <Link href="/gallery" className="text-white/70 hover:text-primary transition-colors">
+                <Link
+                  href="/gallery"
+                  className="text-white/70 hover:text-primary transition-colors"
+                >
                   Gallery
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-white/70 hover:text-primary transition-colors">
+                <Link
+                  href="/contact"
+                  className="text-white/70 hover:text-primary transition-colors"
+                >
                   Contact
                 </Link>
               </li>
