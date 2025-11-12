@@ -18,109 +18,82 @@ export default function Contact() {
 
       <section className="bg-gradient-dark pt-32 pb-16 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="mb-6 text-5xl font-bold md:text-6xl">
+          <h1 className="mb-6 text-4xl font-bold md:text-5xl font-heading">
             Get in <span className="text-gradient-accent">Touch</span>
           </h1>
-          <p className="mx-auto max-w-2xl text-xl text-white/80">
+          <p className="mx-auto max-w-2xl text-xl text-white/80 leading-relaxed">
             Have a question or special request? We&apos;d love to hear from you
           </p>
         </div>
       </section>
 
-      <section className="bg-background pb-20 pt-12 lg:pt-16">
+      <section className="bg-background pb-20 pt-16">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-6xl">
             {/* Dual Column Layout */}
             <div className="grid gap-8 lg:grid-cols-2">
               {/* Left Column - Contact Information */}
-              <div className="space-y-6">
-                <Card className="border-0 shadow-soft">
+              <div className="flex flex-col">
+                <Card className="border border-border/50 shadow-md flex-1">
                   <CardHeader>
-                    <CardTitle className="text-2xl text-foreground">Get in Touch</CardTitle>
+                    <CardTitle className="text-2xl text-foreground font-heading">Get in Touch</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-full bg-primary/15 p-3 flex-shrink-0">
+                  <CardContent className="space-y-5">
+                    <div className="flex items-start gap-3">
+                      <div className="rounded-lg bg-primary/10 p-2.5 flex-shrink-0">
                         <MapPin className="size-5 text-primary" />
                       </div>
                       <div>
-                        <p className="font-semibold text-foreground mb-1">Location</p>
-                        <p className="text-muted-foreground">Piliyandala, Sri Lanka</p>
-                        <p className="text-sm text-muted-foreground">Opposite City Mall, next to Central Bank branch</p>
+                        <p className="font-semibold text-foreground mb-1 font-heading">Location</p>
+                        <p className="text-muted-foreground text-sm">Piliyandala, Sri Lanka</p>
+                        <p className="text-sm text-muted-foreground">
+                          Opposite City Mall, next to Central Bank branch
+                        </p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-full bg-primary/15 p-3 flex-shrink-0">
+                    <div className="flex items-start gap-3">
+                      <div className="rounded-lg bg-primary/10 p-2.5 flex-shrink-0">
                         <Phone className="size-5 text-primary" />
                       </div>
                       <div>
-                        <p className="font-semibold text-foreground mb-1">Phone</p>
-                        <p className="text-muted-foreground">+94 77 123 4567</p>
-                        <p className="text-sm text-muted-foreground">Ask for Sameera, our reservations lead</p>
+                        <p className="font-semibold text-foreground mb-1 font-heading">Phone</p>
+                        <p className="text-muted-foreground text-sm">+94 77 123 4567</p>
+                        <p className="text-xs text-muted-foreground">
+                          Ask for Sameera, our reservations lead
+                        </p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-full bg-primary/15 p-3 flex-shrink-0">
+                    <div className="flex items-start gap-3">
+                      <div className="rounded-lg bg-primary/10 p-2.5 flex-shrink-0">
                         <Mail className="size-5 text-primary" />
                       </div>
                       <div>
-                        <p className="font-semibold text-foreground mb-1">Email</p>
-                        <p className="text-muted-foreground">hello@flamingo.lk</p>
+                        <p className="font-semibold text-foreground mb-1 font-heading">Email</p>
+                        <p className="text-muted-foreground text-sm">hello@flamingo.lk</p>
                         <p className="text-sm text-muted-foreground">reservations@flamingo.lk</p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-full bg-primary/15 p-3 flex-shrink-0">
+                    <div className="flex items-start gap-3">
+                      <div className="rounded-lg bg-primary/10 p-2.5 flex-shrink-0">
                         <Clock className="size-5 text-primary" />
                       </div>
                       <div>
-                        <p className="font-semibold text-foreground mb-1">Opening Hours</p>
-                        <p className="text-muted-foreground">Monday - Friday: 11:00 AM – 10:00 PM</p>
-                        <p className="text-muted-foreground">Saturday - Sunday: 10:00 AM – 11:00 PM</p>
+                        <p className="font-semibold text-foreground mb-1 font-heading">Opening Hours</p>
+                        <p className="text-muted-foreground text-sm">
+                          Monday - Friday: 11:00 AM – 10:00 PM
+                        </p>
+                        <p className="text-muted-foreground text-sm">
+                          Saturday - Sunday: 10:00 AM – 11:00 PM
+                        </p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="border-0 shadow-soft bg-gradient-soft">
-                  <CardContent className="p-6">
-                    <h3 className="font-semibold text-foreground mb-2">Hosting a Private Event?</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Share your celebration details and we&apos;ll curate a bespoke dining plan within 24 hours.
-                      We offer tailored menus, dedicated hosting, and a warm ambiance perfect for any occasion.
-                    </p>
-                    <p className="text-primary text-sm font-medium mt-3">
-                      Email us at events@flamingo.lk
-                    </p>
-                  </CardContent>
-                </Card>
 
-                <Card className="border-0 shadow-soft">
-                  <CardContent className="p-6">
-                    <h3 className="font-semibold text-foreground mb-3">Why Choose Flamingo?</h3>
-                    <ul className="space-y-3 text-sm text-muted-foreground">
-                      <li className="flex items-start gap-2">
-                        <span className="text-primary mt-1">✓</span>
-                        <span>Same-day response to all inquiries during business hours</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-primary mt-1">✓</span>
-                        <span>Complimentary valet parking and wheelchair-friendly entrance</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-primary mt-1">✓</span>
-                        <span>WhatsApp updates with instant confirmations and reminders</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-primary mt-1">✓</span>
-                        <span>Flexible BYOB policy for a personalized experience</span>
-                      </li>
-                    </ul>
-                  </CardContent>
-                </Card>
               </div>
 
               {/* Right Column - Contact Form */}
@@ -130,9 +103,9 @@ export default function Contact() {
             </div>
 
             {/* Map Section - Full Width Below */}
-            <Card className="overflow-hidden border-0 shadow-soft mt-8">
+            <Card className="overflow-hidden border border-border/50 shadow-md mt-8">
               <CardHeader>
-                <CardTitle className="text-2xl text-foreground">Find Us on the Map</CardTitle>
+                <CardTitle className="text-2xl text-foreground font-heading">Find Us on the Map</CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 <iframe

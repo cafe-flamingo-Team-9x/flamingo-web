@@ -101,12 +101,7 @@ export default function Gallery() {
             ))}
           </div>
 
-          <div className="mt-20 rounded-3xl bg-gradient-hero px-8 py-14 text-center text-white shadow-pink-glow">
-            <h2 className="mb-4 text-3xl font-semibold md:text-4xl">Experience It Yourself</h2>
-            <p className="mx-auto max-w-2xl text-lg text-white/85">
-              These pictures don’t do justice to the real experience. Visit us and create your own memories!
-            </p>
-          </div>
+
         </div>
       </section>
 

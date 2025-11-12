@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useCallback, useMemo, useState, useEffect } from 'react';
-import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
-import { signIn } from 'next-auth/react';
-import { toast } from 'sonner';
-
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertTriangle } from "lucide-react";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -15,42 +15,34 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { AlertTriangle } from 'lucide-react';
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 const errorMessages: Record<string, string> = {
-  google:
-    'We ran into a problem starting the Google sign-in flow. Please try again.',
-  GoogleSignin: 'Unable to connect to Google. Please try again.',
-  OAuthSignin: 'Unable to connect to Google. Please try again.',
-  OAuthCallback:
-    'Google rejected the sign-in request. Ensure the OAuth redirect URI matches.',
-  OAuthCreateAccount:
-    'We could not create your Google account. Contact support.',
+  google: "We ran into a problem starting the Google sign-in flow. Please try again.",
+  GoogleSignin: "Unable to connect to Google. Please try again.",
+  OAuthSignin: "Unable to connect to Google. Please try again.",
+  OAuthCallback: "Google rejected the sign-in request. Ensure the OAuth redirect URI matches.",
+  OAuthCreateAccount: "We could not create your Google account. Contact support.",
   OAuthAccountNotLinked:
-    'This Google account is already linked to a different login method. Sign in with that method.',
-  EmailSignin: 'Email sign-in is disabled for this account.',
-  CredentialsSignin: 'Invalid credentials. Please try again.',
-  AccessDenied: 'You do not have access to this application.',
-  not_admin:
-    'This Google account is not authorized for the Cafe Flamingo admin dashboard.',
-  Verification: 'The sign-in link is no longer valid. Request a new one.',
+    "This Google account is already linked to a different login method. Sign in with that method.",
+  EmailSignin: "Email sign-in is disabled for this account.",
+  CredentialsSignin: "Invalid credentials. Please try again.",
+  AccessDenied: "You do not have access to this application.",
+  not_admin: "This Google account is not authorized for the Cafe Flamingo admin dashboard.",
+  Verification: "The sign-in link is no longer valid. Request a new one.",
 };
 
 function getErrorMessage(error?: string | null) {
   if (!error) return undefined;
-  return (
-    errorMessages[error] ??
-    'Something went wrong while signing you in with Google.'
-  );
+  return errorMessages[error] ?? "Something went wrong while signing you in with Google.";
 }
 
 export default function AdminLoginPage() {
   const searchParams = useSearchParams();
-  const errorParam = searchParams?.get('error');
-  const callbackUrlParam = searchParams?.get('callbackUrl');
-  const errorDescription = searchParams?.get('error_description') ?? undefined;
+  const errorParam = searchParams?.get("error");
+  const callbackUrlParam = searchParams?.get("callbackUrl");
+  const errorDescription = searchParams?.get("error_description") ?? undefined;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const errorMessage = useMemo(() => getErrorMessage(errorParam), [errorParam]);
@@ -64,32 +56,32 @@ export default function AdminLoginPage() {
   }, [errorMessage, errorDescription]);
 
   const buildCallbackUrl = useCallback(() => {
-    const fallback = '/admin/dashboard';
+    const fallback = "/admin/dashboard";
 
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return callbackUrlParam ?? fallback;
     }
 
     try {
       const url = new URL(callbackUrlParam ?? fallback, window.location.origin);
-      url.searchParams.set('login', 'success');
+      url.searchParams.set("login", "success");
       return url.toString();
     } catch (error) {
-      console.warn('Failed to parse callback URL, using fallback.', error);
+      console.warn("Failed to parse callback URL, using fallback.", error);
       return fallback;
     }
   }, [callbackUrlParam]);
 
   const handleGoogleSignIn = useCallback(async () => {
     setIsSubmitting(true);
-    toast.info('Redirecting to Google…');
+    toast.info("Redirecting to Google…");
 
     try {
       const finalCallbackUrl = buildCallbackUrl();
-      await signIn('google', { callbackUrl: finalCallbackUrl });
+      await signIn("google", { callbackUrl: finalCallbackUrl });
     } catch (error) {
-      console.error('Failed to initiate Google sign-in:', error);
-      toast.error('Unable to start Google sign-in. Please try again.');
+      console.error("Failed to initiate Google sign-in:", error);
+      toast.error("Unable to start Google sign-in. Please try again.");
       setIsSubmitting(false);
     }
   }, [buildCallbackUrl]);
@@ -111,8 +103,7 @@ export default function AdminLoginPage() {
           <div>
             <CardTitle className="text-2xl">Admin sign in</CardTitle>
             <CardDescription className="text-balance">
-              Access the Cafe Flamingo admin dashboard using your approved
-              Google account.
+              Access the Cafe Flamingo admin dashboard using your approved Google account.
             </CardDescription>
           </div>
         </CardHeader>
@@ -128,16 +119,14 @@ export default function AdminLoginPage() {
               <AlertDescription className="text-sm text-destructive">
                 {errorMessage}
                 {errorDescription ? (
-                  <span className="mt-1 block text-xs text-destructive/90">
-                    {errorDescription}
-                  </span>
+                  <span className="mt-1 block text-xs text-destructive/90">{errorDescription}</span>
                 ) : null}
               </AlertDescription>
             </Alert>
           )}
           <Button
             type="button"
-            className={cn('w-full gap-2')}
+            className={cn("w-full gap-2")}
             onClick={handleGoogleSignIn}
             disabled={isSubmitting}
             aria-busy={isSubmitting}
@@ -165,12 +154,12 @@ export default function AdminLoginPage() {
                 d="M44.5 20H24v8.5h11.8A11.9 11.9 0 0 1 24 37c-5.7 0-10.4-3.8-12.1-9l-6.5 5C8.8 39.3 15.4 44 24 44c11 0 20-8 20-22 0-1.3-.1-2.7-.5-4z"
               />
             </svg>
-            {isSubmitting ? 'Redirecting…' : 'Continue with Google'}
+            {isSubmitting ? "Redirecting…" : "Continue with Google"}
           </Button>
         </CardContent>
         <CardFooter className="flex flex-col items-center gap-2 text-center text-xs text-muted-foreground">
           <p>
-            Having trouble signing in?{' '}
+            Having trouble signing in?{" "}
             <a
               href="mailto:support@cafeflamingo.com"
               className="text-primary underline underline-offset-4"
