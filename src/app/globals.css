@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @plugin "tailwindcss-animate";
 
 :root {
@@ -112,64 +112,64 @@
 }
 
 @theme inline {
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --color-card: var(--card);
-    --color-card-foreground: var(--card-foreground);
-    --color-popover: var(--popover);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-primary: var(--primary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-secondary: var(--secondary);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-muted: var(--muted);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-accent: var(--accent);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-destructive: var(--destructive);
-    --color-destructive-foreground: var(--destructive-foreground);
-    --color-border: var(--border);
-    --color-input: var(--input);
-    --color-ring: var(--ring);
-    --color-chart-1: var(--chart-1);
-    --color-chart-2: var(--chart-2);
-    --color-chart-3: var(--chart-3);
-    --color-chart-4: var(--chart-4);
-    --color-chart-5: var(--chart-5);
-    --color-sidebar: var(--sidebar);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-ring: var(--sidebar-ring);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 
     --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
         sans-serif;
     --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
         monospace;
 
-    --radius-sm: calc(var(--radius) - 4px);
-    --radius-md: calc(var(--radius) - 2px);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 
-    --shadow-2xs: var(--shadow-2xs);
-    --shadow-xs: var(--shadow-xs);
-    --shadow-sm: var(--shadow-sm);
-    --shadow: var(--shadow);
-    --shadow-md: var(--shadow-md);
-    --shadow-lg: var(--shadow-lg);
-    --shadow-xl: var(--shadow-xl);
-    --shadow-2xl: var(--shadow-2xl);
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
 
-    --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
-    --tracking-tight: calc(var(--tracking-normal) - 0.025em);
-    --tracking-normal: var(--tracking-normal);
-    --tracking-wide: calc(var(--tracking-normal) + 0.025em);
-    --tracking-wider: calc(var(--tracking-normal) + 0.05em);
-    --tracking-widest: calc(var(--tracking-normal) + 0.1em);
+  --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
+  --tracking-tight: calc(var(--tracking-normal) - 0.025em);
+  --tracking-normal: var(--tracking-normal);
+  --tracking-wide: calc(var(--tracking-normal) + 0.025em);
+  --tracking-wider: calc(var(--tracking-normal) + 0.05em);
+  --tracking-widest: calc(var(--tracking-normal) + 0.1em);
 }
 
 html {
@@ -213,9 +213,9 @@ html {
 }
 
 @layer base {
-    * {
-        @apply border-border;
-    }
+  * {
+    @apply border-border;
+  }
 
     body {
         @apply bg-background text-foreground antialiased;
@@ -239,42 +239,44 @@ html {
         font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
-    .bg-gradient-dark {
-        background: linear-gradient(135deg, rgba(7, 12, 24, 0.96) 0%, rgba(17, 25, 40, 0.92) 100%);
-    }
+  .bg-gradient-dark {
+    background: linear-gradient(135deg, rgba(7, 12, 24, 0.96) 0%, rgba(17, 25, 40, 0.92) 100%);
+  }
 
-    .bg-gradient-soft {
-        background: linear-gradient(135deg, rgba(252, 231, 243, 0.9) 0%, rgba(248, 250, 255, 1) 100%);
-    }
+  .bg-gradient-soft {
+    background: linear-gradient(135deg, rgba(252, 231, 243, 0.9) 0%, rgba(248, 250, 255, 1) 100%);
+  }
 
-    .bg-gradient-hero {
-        background: linear-gradient(135deg, rgba(236, 72, 153, 0.95), rgba(249, 115, 22, 0.9));
-    }
+  .bg-gradient-hero {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.95), rgba(249, 115, 22, 0.9));
+  }
 
-    .text-gradient-accent {
-        @apply bg-clip-text text-transparent;
-        background-image: linear-gradient(120deg, rgba(236, 72, 153, 1), rgba(249, 115, 22, 1));
-    }
+  .text-gradient-accent {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(120deg, rgba(236, 72, 153, 1), rgba(249, 115, 22, 1));
+  }
 
-    .hover-lift {
-        transition: transform 200ms ease, box-shadow 200ms ease;
-    }
+  .hover-lift {
+    transition:
+      transform 200ms ease,
+      box-shadow 200ms ease;
+  }
 
-    .hover-lift:hover {
-        transform: translateY(-6px);
-    }
+  .hover-lift:hover {
+    transform: translateY(-6px);
+  }
 
-    .shadow-pink-glow {
-        box-shadow: 0 18px 45px rgba(236, 72, 153, 0.32);
-    }
+  .shadow-pink-glow {
+    box-shadow: 0 18px 45px rgba(236, 72, 153, 0.32);
+  }
 
-    .shadow-soft {
-        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
-    }
+  .shadow-soft {
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+  }
 
-    .shadow-elegant {
-        box-shadow: 0 24px 40px -12px rgba(15, 23, 42, 0.3);
-    }
+  .shadow-elegant {
+    box-shadow: 0 24px 40px -12px rgba(15, 23, 42, 0.3);
+  }
 
     .animate-fade-in {
         animation: fade-in-rise 700ms ease-out both;
@@ -315,13 +317,13 @@ html {
 }
 
 @keyframes fade-in-rise {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

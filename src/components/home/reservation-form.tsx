@@ -16,7 +16,7 @@ export function ReservationForm() {
         name: "",
         phone: "",
         date: undefined as Date | undefined,
-        time: "",
+        time: "18:00",
         comments: "",
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,7 +35,7 @@ export function ReservationForm() {
         // Reset form after 3 seconds
         setTimeout(() => {
             setIsSubmitted(false);
-            setFormData({ name: "", phone: "", date: undefined, time: "", comments: "" });
+            setFormData({ name: "", phone: "", date: undefined, time: "18:00", comments: "" });
         }, 3000);
     };
 
@@ -150,7 +150,6 @@ export function ReservationForm() {
                         name="time"
                         value={formData.time}
                         onChange={handleChange}
-                        defaultValue="18:00"
                         className="h-11 border-border/50 focus:border-primary/50 transition-colors bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                     />
                 </div>
