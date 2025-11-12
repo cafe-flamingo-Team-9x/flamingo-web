@@ -57,8 +57,7 @@ export default function Home() {
 
         <div className="relative z-10 text-center px-4 animate-fade-in max-w-5xl mx-auto">
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 font-heading text-white">
-            Welcome to{" "}
-            <span className="text-gradient-accent">Flamingo</span>
+            Welcome to <span className="text-gradient-accent">Flamingo</span>
           </h1>
           <p className="text-2xl md:text-3xl text-pink-200 mb-4 font-heading tracking-wide">
             Cafe • Bakery • Lounge
@@ -90,7 +89,9 @@ export default function Home() {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-4 font-heading">Why Choose Flamingo?</h2>
+            <h2 className="text-4xl font-bold text-foreground mb-4 font-heading">
+              Why Choose Flamingo?
+            </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               We combine casual elegance with exceptional cuisine for an unforgettable dining
               experience
@@ -121,16 +122,18 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1">
-              <h2 className="text-4xl font-bold text-foreground mb-6 font-heading">About Flamingo</h2>
+              <h2 className="text-4xl font-bold text-foreground mb-6 font-heading">
+                About Flamingo
+              </h2>
               <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
-                Located in the heart of Piliyandala, Flamingo offers a unique dining experience
-                that combines casual elegance with exceptional cuisine. Our BYOB policy allows
-                you to bring your favorite beverages, making every meal personal and special.
+                Located in the heart of Piliyandala, Flamingo offers a unique dining experience that
+                combines casual elegance with exceptional cuisine. Our BYOB policy allows you to
+                bring your favorite beverages, making every meal personal and special.
               </p>
               <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
-                Whether you're here for a casual lunch, a romantic dinner, or a celebration
-                with friends and family, our warm atmosphere and attentive service ensure a
-                memorable experience.
+                Whether you're here for a casual lunch, a romantic dinner, or a celebration with
+                friends and family, our warm atmosphere and attentive service ensure a memorable
+                experience.
               </p>
               <div className="flex items-start space-x-3 mb-4">
                 <MapPin className="text-primary flex-shrink-0 mt-1" size={20} />
@@ -143,9 +146,7 @@ export default function Home() {
                 <Clock className="text-primary flex-shrink-0 mt-1" size={20} />
                 <div>
                   <p className="font-semibold text-foreground font-heading">Hours</p>
-                  <p className="text-muted-foreground">
-                    Mon-Fri: 11AM-10PM | Sat-Sun: 10AM-11PM
-                  </p>
+                  <p className="text-muted-foreground">Mon-Fri: 11AM-10PM | Sat-Sun: 10AM-11PM</p>
                 </div>
               </div>
             </div>
@@ -168,7 +169,9 @@ export default function Home() {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-4 font-heading">Current Promotions</h2>
+            <h2 className="text-4xl font-bold text-foreground mb-4 font-heading">
+              Current Promotions
+            </h2>
             <p className="text-muted-foreground text-lg">
               Check out our special offers and seasonal deals
             </p>
