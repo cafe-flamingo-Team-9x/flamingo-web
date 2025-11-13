@@ -83,8 +83,10 @@ model GalleryItem {
   gCategory  String
   caption    String?
   galleryUrl String
+  visible    Boolean  @default(true)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   @@index([gCategory])
+  @@index([visible])
 }
