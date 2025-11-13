@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 import Footer from '@/components/footer';
 import Navigation from '@/components/navigation';
 import {
@@ -13,6 +11,8 @@ import {
 } from '@/components/ui/pagination';
 import { buildPaginationRange } from '@/lib/pagination';
 import { prisma } from '@/lib/prisma';
+import GalleryGrid from './_components/gallery-grid';
+import type { GalleryDisplayItem } from './types';
 
 export const metadata = {
   title: 'Gallery | Flamingo Restaurant',
@@ -22,13 +22,6 @@ export const metadata = {
 
 export const revalidate = 120;
 const PAGE_SIZE = 12;
-
-type GalleryDisplayItem = {
-  id: string;
-  gCategory: string;
-  caption: string | null;
-  galleryUrl: string;
-};
 
 type GalleryItemRecord = {
   id: string;
@@ -173,23 +166,7 @@ export default async function Gallery({ searchParams }: GalleryPageProps) {
 
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-soft transition-all duration-300 hover-lift hover:shadow-elegant"
-              >
-                <Image
-                  src={item.galleryUrl}
-                  alt={item.caption ?? `${item.gCategory} at Flamingo Café`}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 flex items-end bg-gradient-to-t from-slate-950/80 via-slate-900/0 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                </div>
-              </div>
-            ))}
-          </div>
+          <GalleryGrid items={items} />
 
           {/* Pagination */}
           {totalPages > 1 && (
