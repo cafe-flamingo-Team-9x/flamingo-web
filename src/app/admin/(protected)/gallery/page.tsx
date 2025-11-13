@@ -164,25 +164,25 @@ async function fetchGalleryItems(
   const categoryCounts =
     rawMeta.categoryCounts && typeof rawMeta.categoryCounts === 'object'
       ? Object.entries(rawMeta.categoryCounts).reduce<Record<string, number>>(
-          (accumulator, [key, value]) => {
-            if (typeof value === 'number' && Number.isFinite(value)) {
-              accumulator[key] = value;
-            }
-            return accumulator;
-          },
-          {}
-        )
+        (accumulator, [key, value]) => {
+          if (typeof value === 'number' && Number.isFinite(value)) {
+            accumulator[key] = value;
+          }
+          return accumulator;
+        },
+        {}
+      )
       : {};
 
   const totalItems =
     typeof rawMeta.totalItems === 'number' &&
-    Number.isFinite(rawMeta.totalItems)
+      Number.isFinite(rawMeta.totalItems)
       ? rawMeta.totalItems
       : data.length;
 
   const totalPages =
     typeof rawMeta.totalPages === 'number' &&
-    Number.isFinite(rawMeta.totalPages)
+      Number.isFinite(rawMeta.totalPages)
       ? Math.max(1, rawMeta.totalPages)
       : Math.max(1, Math.ceil(Math.max(totalItems, 1) / params.pageSize));
 
@@ -199,13 +199,13 @@ async function fetchGalleryItems(
     totalPages,
     totalCategories:
       typeof rawMeta.totalCategories === 'number' &&
-      Number.isFinite(rawMeta.totalCategories)
+        Number.isFinite(rawMeta.totalCategories)
         ? Math.max(0, rawMeta.totalCategories)
         : Object.keys(categoryCounts).length,
     categoryCounts,
     latestCreatedAt:
       typeof rawMeta.latestCreatedAt === 'string' &&
-      rawMeta.latestCreatedAt.length > 0
+        rawMeta.latestCreatedAt.length > 0
         ? rawMeta.latestCreatedAt
         : null,
   };
@@ -459,9 +459,9 @@ export default function AdminGalleryPage() {
 
   const formattedLatestUpload = resolvedLatestTimestamp
     ? new Intl.DateTimeFormat('en-US', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      }).format(new Date(resolvedLatestTimestamp))
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    }).format(new Date(resolvedLatestTimestamp))
     : '--';
 
   const paginationRange = useMemo(
@@ -918,11 +918,10 @@ export default function AdminGalleryPage() {
                     </div>
                     <div className="flex flex-col gap-1 text-xs text-muted-foreground sm:ml-auto sm:items-end">
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wide ${
-                          item.visible
-                            ? 'bg-emerald-500/10 text-emerald-600 ring-1 ring-inset ring-emerald-500/20'
-                            : 'bg-amber-500/10 text-amber-600 ring-1 ring-inset ring-amber-500/20'
-                        }`}
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wide ${item.visible
+                          ? 'bg-emerald-500/10 text-emerald-600 ring-1 ring-inset ring-emerald-500/20'
+                          : 'bg-amber-500/10 text-amber-600 ring-1 ring-inset ring-amber-500/20'
+                          }`}
                       >
                         {item.visible ? 'Visible' : 'Hidden'}
                       </span>
@@ -1019,7 +1018,7 @@ export default function AdminGalleryPage() {
                       className={cn(
                         'transition-opacity',
                         (!canGoPrevious || isPageLoading) &&
-                          'pointer-events-none opacity-50'
+                        'pointer-events-none opacity-50'
                       )}
                     />
                   </PaginationItem>
@@ -1068,7 +1067,7 @@ export default function AdminGalleryPage() {
                       className={cn(
                         'transition-opacity',
                         (!canGoNext || isPageLoading) &&
-                          'pointer-events-none opacity-50'
+                        'pointer-events-none opacity-50'
                       )}
                     />
                   </PaginationItem>
@@ -1226,7 +1225,7 @@ export default function AdminGalleryPage() {
                           editSelectedFile
                             ? `Preview of updated image for ${editingItem.gCategory}`
                             : editingItem.caption ??
-                              `${editingItem.gCategory} showcase`
+                            `${editingItem.gCategory} showcase`
                         }
                         fill
                         sizes="(min-width: 768px) 260px, 100vw"

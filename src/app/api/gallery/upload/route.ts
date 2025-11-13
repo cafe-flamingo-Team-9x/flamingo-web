@@ -8,33 +8,22 @@ import {
 import { randomUUID } from 'node:crypto';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getStorageEnv } from '@/lib/env';
 
 const BUCKET_NAME = 'flamingo-cafe';
 const GALLERY_FOLDER = 'gallery';
 
 let cachedClient: S3Client | null = null;
-
-function ensureEnv(name: string) {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`${name} is not set`);
-  }
-  return value;
-}
+const storageEnv = getStorageEnv();
 
 function getS3Client() {
   if (!cachedClient) {
-    const endpoint = ensureEnv('ENDPOINT_URL');
-    const region = ensureEnv('REGION');
-    const accessKeyId = ensureEnv('ACCESS_KEY_ID');
-    const secretAccessKey = ensureEnv('SECRET_ACCESS_KEY');
-
     cachedClient = new S3Client({
-      region,
-      endpoint,
+      region: storageEnv.REGION,
+      endpoint: storageEnv.ENDPOINT_URL,
       credentials: {
-        accessKeyId,
-        secretAccessKey,
+        accessKeyId: storageEnv.ACCESS_KEY_ID,
+        secretAccessKey: storageEnv.SECRET_ACCESS_KEY,
       },
       forcePathStyle: true,
     });
@@ -71,7 +60,7 @@ function buildObjectKey(filename: string) {
 }
 
 function getPublicUrl(key: string) {
-  const endpoint = ensureEnv('ENDPOINT_URL');
+  const endpoint = storageEnv.ENDPOINT_URL;
   const endpointUrl = new URL(endpoint);
 
   const publicHost = endpointUrl.hostname.replace('.storage.', '.');

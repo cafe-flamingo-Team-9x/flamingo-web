@@ -3,7 +3,7 @@
 import type { LucideIcon } from "lucide-react";
 import { Calendar, Menu as MenuIcon, MessageCircle, Users } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { toast } from "sonner";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,6 +37,14 @@ const STAT_SECTIONS: StatSection[] = [
 ];
 
 export default function DashboardPage() {
+  return (
+    <Suspense fallback={<section className="min-h-[50vh]" aria-busy="true" aria-live="polite" />}>
+      <DashboardPageContent />
+    </Suspense>
+  );
+}
+
+function DashboardPageContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

@@ -5,6 +5,8 @@ import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 import { getServerEnv } from "@/lib/env";
 
+const env = getServerEnv();
+
 export const authOptions: NextAuthOptions = {
   // Configure Prisma as the database adapter
   adapter: PrismaAdapter(prisma),
@@ -13,21 +15,13 @@ export const authOptions: NextAuthOptions = {
   providers: [
     // Use validated env values
     GoogleProvider({
-      clientId:
-        process.env.GOOGLE_CLIENT_ID ??
-        (() => {
-          throw new Error("GOOGLE_CLIENT_ID is not set");
-        })(),
-      clientSecret:
-        process.env.GOOGLE_CLIENT_SECRET ??
-        (() => {
-          throw new Error("GOOGLE_CLIENT_SECRET is not set");
-        })(),
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
 
   // Secret for signing session cookies
-  secret: getServerEnv().NEXTAUTH_SECRET,
+  secret: env.NEXTAUTH_SECRET,
 
   // Session configuration
   session: {
@@ -139,7 +133,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   // Debug mode for development
-  debug: process.env.NODE_ENV === "development",
+  debug: env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);
