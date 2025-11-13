@@ -1,8 +1,9 @@
+#!/usr/bin/env tsx
+
+import "dotenv/config";
 import { exit, stdin as input, stdout as output } from "node:process";
 import readline from "node:readline/promises";
 import { PrismaClient } from "@prisma/client";
-import "dotenv/config";
-import { validateEnv } from "@/lib/env";
 
 validateEnv(process.env);
 const prisma = new PrismaClient();

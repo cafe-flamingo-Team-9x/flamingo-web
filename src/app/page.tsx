@@ -1,49 +1,67 @@
-import { Clock, MapPin, Utensils, Wine } from "lucide-react";
+"use client";
+
+import { Clock, Utensils, Wine } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRef } from "react";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
 import Footer from "@/components/footer";
 import Navigation from "@/components/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { FeatureCard } from "@/components/home/feature-card";
+import { AnimatedSectionHeader } from "@/components/home/animated-section-header";
+import { AboutSection } from "@/components/home/about-section";
+import { ReservationSection } from "@/components/home/reservation-section";
 
 export default function Home() {
   const features = [
     {
-      icon: <Utensils className="w-8 h-8 text-primary" />,
+      icon: <Utensils className="w-10 h-10 text-primary" />,
       title: "Exceptional Cuisine",
       description: "Carefully crafted dishes using the finest ingredients",
     },
     {
-      icon: <Wine className="w-8 h-8 text-primary" />,
+      icon: <Wine className="w-10 h-10 text-primary" />,
       title: "BYOB Policy",
       description: "Bring your favorite beverages to complement your meal",
     },
     {
-      icon: <Clock className="w-8 h-8 text-primary" />,
+      icon: <Clock className="w-10 h-10 text-primary" />,
       title: "Flexible Hours",
       description: "Open 7 days a week for lunch and dinner",
     },
   ];
 
-  const promotions = [
-    {
-      title: "Weekday Lunch Special",
-      description: "Enjoy 20% off on all lunch items Monday to Friday",
-      period: "Mon - Fri, 11AM - 3PM",
+  const container = useRef(null);
+
+  useGSAP(
+    () => {
+      const tl = gsap.timeline({
+        defaults: { ease: "power3.out", duration: 0.8 },
+      });
+      tl.from(".hero-bg-overlay", { opacity: 0, duration: 1.5 })
+        .from(
+          ".hero-h1",
+          { opacity: 0, y: 20, stagger: 0.1 },
+          "-=0.5",
+        )
+        .from(".hero-p1", { opacity: 0, y: 20 }, "-=0.7")
+        .from(".hero-p2", { opacity: 0, y: 20 }, "-=0.7")
+        .from(".hero-buttons", { opacity: 0, y: 20 }, "-=0.7");
     },
-    {
-      title: "Weekend Family Feast",
-      description: "Special family platters perfect for sharing",
-      period: "Sat - Sun, All Day",
-    },
-  ];
+    { scope: container },
+  );
 
   return (
     <div className="min-h-screen">
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative flex min-h-screen items-center justify-center overflow-hidden pt-28 pb-16 md:pt-32 md:pb-20">
+      <section
+        ref={container}
+        className="relative flex min-h-screen items-center justify-center overflow-hidden pt-24 pb-14 md:pt-32 md:pb-20"
+      >
         <div className="absolute inset-0">
           <Image
             src="/assets/hero-dining.jpg"
@@ -52,20 +70,20 @@ export default function Home() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/85 via-slate-900/75 to-slate-800/70" />
+          <div className="hero-bg-overlay absolute inset-0 bg-gradient-to-br from-slate-900/85 via-slate-900/75 to-slate-800/70" />
         </div>
 
-        <div className="relative z-10 text-center px-4 animate-fade-in max-w-5xl mx-auto">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 font-heading text-white">
+        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
+          <h1 className="hero-h1 text-6xl md:text-6xl lg:text-8xl font-bold mb-6 font-heading text-white">
             Welcome to <span className="text-gradient-accent">Flamingo</span>
           </h1>
-          <p className="text-2xl md:text-3xl text-pink-200 mb-4 font-heading tracking-wide">
+          <p className="hero-p1 text-2xl md:text-3xl text-pink-200 mb-4 font-heading tracking-wide">
             Cafe • Bakery • Lounge
           </p>
-          <p className="text-lg md:text-xl text-slate-200 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="hero-p2 text-base md:text-lg text-slate-200 mb-10 max-w-2xl mx-auto leading-relaxed">
             Experience exceptional dining in the heart of Piliyandala
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-xl mx-auto">
+          <div className="hero-buttons flex flex-col sm:flex-row gap-4 justify-center items-center max-w-xl mx-auto">
             <Button
               asChild
               size="lg"
@@ -77,139 +95,63 @@ export default function Home() {
               asChild
               size="lg"
               variant="outline"
-              className="w-full sm:w-auto border-2 border-white text-black hover:bg-white hover:text-slate-900 text-base h-12 px-8"
+              className="w-full sm:w-auto border-2 border-white bg-white/10 backdrop-blur-sm text-white hover:bg-white hover:text-slate-900 text-base h-12 px-8"
             >
-              <Link href="/reservations">Reserve a Table</Link>
+              <Link href="/#reservations">Reserve a Table</Link>
             </Button>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-4 font-heading">
-              Why Choose Flamingo?
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              We combine casual elegance with exceptional cuisine for an unforgettable dining
-              experience
-            </p>
-          </div>
+      <section className="py-20 bg-gradient-to-b from-background via-background to-muted/10 relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-pink-500/5 rounded-full blur-2xl" />
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-orange-500/5 rounded-full blur-2xl" />
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature) => (
-              <Card
+        <div className="container mx-auto px-4 relative z-10">
+          <AnimatedSectionHeader
+            title="Why Choose Flamingo?"
+            highlightWord="Flamingo"
+            description="We combine casual elegance with exceptional cuisine for an unforgettable dining experience"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 max-w-7xl mx-auto">
+            {features.map((feature, index) => (
+              <FeatureCard
                 key={feature.title}
-                className="hover-lift bg-card border-0 shadow-soft hover:shadow-elegant transition-all duration-300"
-              >
-                <CardContent className="p-8 text-center">
-                  <div className="flex justify-center mb-4">{feature.icon}</div>
-                  <h3 className="text-xl font-semibold text-foreground mb-3 font-heading">
-                    {feature.title}
-                  </h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </CardContent>
-              </Card>
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+                index={index}
+              />
             ))}
           </div>
         </div>
       </section>
+
+      {/* Separator */}
+      <div className="relative h-3 bg-gradient-to-b from-background to-muted/30">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-full max-w-3xl h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        </div>
+      </div>
+
 
       {/* About Section */}
-      <section className="py-20 bg-gradient-soft">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="order-2 lg:order-1">
-              <h2 className="text-4xl font-bold text-foreground mb-6 font-heading">
-                About Flamingo
-              </h2>
-              <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
-                Located in the heart of Piliyandala, Flamingo offers a unique dining experience that
-                combines casual elegance with exceptional cuisine. Our BYOB policy allows you to
-                bring your favorite beverages, making every meal personal and special.
-              </p>
-              <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
-                Whether you're here for a casual lunch, a romantic dinner, or a celebration with
-                friends and family, our warm atmosphere and attentive service ensure a memorable
-                experience.
-              </p>
-              <div className="flex items-start space-x-3 mb-4">
-                <MapPin className="text-primary flex-shrink-0 mt-1" size={20} />
-                <div>
-                  <p className="font-semibold text-foreground font-heading">Location</p>
-                  <p className="text-muted-foreground">Piliyandala, Sri Lanka</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <Clock className="text-primary flex-shrink-0 mt-1" size={20} />
-                <div>
-                  <p className="font-semibold text-foreground font-heading">Hours</p>
-                  <p className="text-muted-foreground">Mon-Fri: 11AM-10PM | Sat-Sun: 10AM-11PM</p>
-                </div>
-              </div>
-            </div>
-            <div className="order-1 lg:order-2">
-              <div className="relative rounded-lg overflow-hidden shadow-pink-glow">
-                <Image
-                  src="/assets/restaurant-interior.jpg"
-                  alt="Flamingo Restaurant Interior"
-                  width={600}
-                  height={500}
-                  className="w-full h-[500px] object-cover hover-lift"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AboutSection />
 
-      {/* Promotions Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-4 font-heading">
-              Current Promotions
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Check out our special offers and seasonal deals
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {promotions.map((promo) => (
-              <Card
-                key={promo.title}
-                className="bg-gradient-hero hover-lift hover:shadow-elegant transition-all duration-300 border-0 shadow-pink-glow"
-              >
-                <CardContent className="p-8 text-center">
-                  <h3 className="text-2xl font-bold text-white mb-3 font-heading">{promo.title}</h3>
-                  <p className="text-white/90 mb-4 text-lg">{promo.description}</p>
-                  <p className="text-white/80 text-sm font-medium">{promo.period}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+      {/* Separator */}
+      <div className="relative h-3 bg-gradient-to-b from-background to-muted/30">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-full max-w-3xl h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         </div>
-      </section>
+      </div>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-dark text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-6 font-heading">Ready to Experience Flamingo?</h2>
-          <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-            Book your table today and enjoy an exceptional dining experience
-          </p>
-          <Button
-            asChild
-            size="lg"
-            className="bg-primary hover:bg-primary/90 text-white shadow-pink-200 text-base h-12 px-8"
-          >
-            <Link href="/reservations">Make a Reservation</Link>
-          </Button>
-        </div>
-      </section>
+      {/* Reservation Section */}
+      <ReservationSection />
 
       <Footer />
     </div>

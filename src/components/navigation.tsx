@@ -12,10 +12,14 @@ import { cn } from "@/lib/utils";
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Menu", href: "/menu" },
-  { label: "Reservations", href: "/reservations" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
 ];
+
+const normalizeHrefPathname = (href: string) => {
+  const path = href.split("#")[0];
+  return path === "" ? "/" : path;
+};
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -23,26 +27,26 @@ export default function Navigation() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-gradient-dark backdrop-blur-xl">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3 md:px-8 md:py-4">
+      <div className="container mx-auto flex items-center justify-between p-4">
         <Link href="/" aria-label="Flamingo home" className="flex items-center gap-3">
           <div className="relative h-10 w-10 overflow-hidden rounded-full">
             <Image
-              src="/assets/flamingo-logo.jpg"
+              src="/assets/flamingo-logo.png"
               alt="Flamingo Café logo"
               fill
-              className="object-cover"
-              sizes="40px"
+              className="object-contain"
             />
           </div>
-          <span className="text-lg font-semibold uppercase tracking-wide text-white">
+          <span className="text-lg text-pink-200">
             Flamingo Café
           </span>
         </Link>
 
         <nav className="hidden items-center gap-10 md:flex">
           {NAV_LINKS.map((link) => {
+            const linkPathname = normalizeHrefPathname(link.href);
             const isActive =
-              pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
+              pathname === linkPathname || (linkPathname !== "/" && pathname.startsWith(linkPathname));
             return (
               <Link
                 key={link.href}
@@ -67,7 +71,7 @@ export default function Navigation() {
 
         <div className="hidden md:flex">
           <Button asChild size="lg" className="px-6 text-base">
-            <Link href="/reservations">Book a Table</Link>
+            <Link href="/#reservations">Book a Table</Link>
           </Button>
         </div>
 
@@ -93,8 +97,9 @@ export default function Navigation() {
       >
         <div className="container mx-auto flex flex-col gap-4 px-4 py-6">
           {NAV_LINKS.map((link) => {
+            const linkPathname = normalizeHrefPathname(link.href);
             const isActive =
-              pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
+              pathname === linkPathname || (linkPathname !== "/" && pathname.startsWith(linkPathname));
             return (
               <Link
                 key={link.href}
@@ -111,7 +116,7 @@ export default function Navigation() {
             );
           })}
           <Button asChild size="lg" className="w-full justify-center text-base">
-            <Link href="/reservations" onClick={() => setIsOpen(false)}>
+            <Link href="/#reservations" onClick={() => setIsOpen(false)}>
               Book a Table
             </Link>
           </Button>

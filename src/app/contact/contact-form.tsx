@@ -45,9 +45,9 @@ export function ContactForm({ className }: ContactFormProps) {
   };
 
   return (
-    <Card className={cn("border-0 shadow-soft", className)}>
+    <Card className={cn("border border-border/50 shadow-md", className)}>
       <CardHeader>
-        <CardTitle className="text-2xl text-foreground">Send Us a Message</CardTitle>
+        <CardTitle className="text-2xl text-foreground font-heading">Send Us a Message</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-5">

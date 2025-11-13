@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { getServerEnv } from "@/lib/env";
 import "./globals.css";
 import { Providers } from "./providers";
-
-// Validate environment at app bootstrap (server-side)
-getServerEnv();
 
 const geist = Geist({
   subsets: ["latin"],

@@ -103,7 +103,7 @@ export default function AdminLoginPage() {
           <div>
             <CardTitle className="text-2xl">Admin Sign-In</CardTitle>
             <CardDescription className="text-balance">
-              Sign in to the Cafe Flamingo admin dashboard with your approved Google account.
+              Access the Cafe Flamingo admin dashboard using your approved Google account.
             </CardDescription>
           </div>
         </CardHeader>
@@ -126,11 +126,7 @@ export default function AdminLoginPage() {
           )}
           <Button
             type="button"
-            variant="outline"
-            size="lg"
-            className={cn(
-              "w-full gap-2 shadow-sm border-input/60 bg-background dark:bg-card hover:bg-muted/40 hover:text-foreground"
-            )}
+            className={cn("w-full gap-2")}
             onClick={handleGoogleSignIn}
             disabled={isSubmitting}
             aria-busy={isSubmitting}
@@ -151,7 +147,7 @@ export default function AdminLoginPage() {
         </CardContent>
         <CardFooter className="flex flex-col items-center gap-2 text-center text-xs text-muted-foreground py-3">
           <p>
-            Having trouble signing in?{' '}
+            Having trouble signing in?{" "}
             <a
               href="mailto:support@cafeflamingo.com"
               className="text-primary underline underline-offset-4"

@@ -13,7 +13,7 @@ export const EnvSchema = z
     NEXTAUTH_SECRET: z
       .string()
       .min(32, { message: "NEXTAUTH_SECRET must be at least 32 characters" }),
-    NEXTAUTH_URL: z.string().url({ message: "NEXTAUTH_URL must be a valid URL" }).optional(),
+    NEXTAUTH_URL: z.url({ message: "NEXTAUTH_URL must be a valid URL" }).optional(),
     GOOGLE_CLIENT_ID: z.string().min(1, { message: "GOOGLE_CLIENT_ID is required" }),
     GOOGLE_CLIENT_SECRET: z.string().min(1, { message: "GOOGLE_CLIENT_SECRET is required" }),
     RESEND_API_KEY: z.string().optional(),

@@ -1,8 +1,9 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { getServerEnv } from "@/lib/env";
+
 import { prisma } from "@/lib/prisma";
+import { getServerEnv } from "@/lib/env";
 
 export const authOptions: NextAuthOptions = {
   // Configure Prisma as the database adapter
@@ -12,8 +13,16 @@ export const authOptions: NextAuthOptions = {
   providers: [
     // Use validated env values
     GoogleProvider({
-      clientId: getServerEnv().GOOGLE_CLIENT_ID,
-      clientSecret: getServerEnv().GOOGLE_CLIENT_SECRET,
+      clientId:
+        process.env.GOOGLE_CLIENT_ID ??
+        (() => {
+          throw new Error("GOOGLE_CLIENT_ID is not set");
+        })(),
+      clientSecret:
+        process.env.GOOGLE_CLIENT_SECRET ??
+        (() => {
+          throw new Error("GOOGLE_CLIENT_SECRET is not set");
+        })(),
     }),
   ],
 
