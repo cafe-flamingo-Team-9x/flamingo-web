@@ -179,7 +179,7 @@ export default async function Menu() {
         <Navigation />
         <section className="bg-gradient-dark pt-32 pb-16 text-white">
           <div className="container mx-auto px-4 text-center">
-            <h1 className="mb-6 text-5xl font-bold md:text-6xl">
+            <h1 className="mb-6 text-5xl font-bold md:text-5xl">
               Our <span className="text-gradient-accent">Menu</span>
             </h1>
             <p className="mx-auto max-w-2xl text-xl text-white/80">
@@ -199,7 +199,7 @@ export default async function Menu() {
 
       <section className="bg-gradient-dark pt-32 pb-16 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="mb-6 text-5xl font-bold md:text-6xl">
+          <h1 className="mb-6 text-5xl font-bold md:text-5xl">
             Our <span className="text-gradient-accent">Menu</span>
           </h1>
           <p className="mx-auto max-w-2xl text-xl text-white/80">

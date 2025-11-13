@@ -159,12 +159,12 @@ export default async function Gallery({ searchParams }: GalleryPageProps) {
     <div className="min-h-screen bg-white">
       <Navigation />
 
-      <section className="bg-white pt-32 pb-16">
+      <section className="bg-gradient-dark pt-32 pb-16 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="mb-6 text-5xl font-bold text-slate-900 md:text-6xl">
+          <h1 className="mb-6 text-5xl font-bold font-heading md:text-5xl">
             Our <span className="text-gradient-accent">Gallery</span>
           </h1>
-          <p className="mx-auto max-w-2xl text-xl text-slate-600">
+          <p className="mx-auto max-w-2xl text-xl text-white/80 leading-relaxed">
             Take a visual journey through our culinary creations and inviting
             atmosphere
           </p>
@@ -186,14 +186,6 @@ export default async function Gallery({ searchParams }: GalleryPageProps) {
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 flex items-end bg-gradient-to-t from-slate-950/80 via-slate-900/0 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <div className="p-5 text-white">
-                    <span className="mb-2 inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                      {item.gCategory}
-                    </span>
-                    {item.caption ? (
-                      <p className="text-sm text-white/90">{item.caption}</p>
-                    ) : null}
-                  </div>
                 </div>
               </div>
             ))}
@@ -219,11 +211,10 @@ export default async function Gallery({ searchParams }: GalleryPageProps) {
                   {/* Page Numbers */}
                   {paginationRange.map((pageItem, index) => (
                     <PaginationItem
-                      key={`page-${
-                        typeof pageItem === 'number'
-                          ? pageItem
-                          : `ellipsis-${index}`
-                      }`}
+                      key={`page-${typeof pageItem === 'number'
+                        ? pageItem
+                        : `ellipsis-${index}`
+                        }`}
                     >
                       {pageItem === 'ellipsis' ? (
                         <PaginationEllipsis className="text-slate-900" />
