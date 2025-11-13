@@ -1,12 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    authInterrupts: true,
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lywrplxajfgqnauwdphc.supabase.co',
+        pathname: '/storage/v1/object/public/**',
+      },
+    ],
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.css$/,
       use: ['style-loader', 'css-loader'],
-    })
-    return config
+    });
+    return config;
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;
