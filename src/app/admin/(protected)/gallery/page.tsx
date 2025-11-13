@@ -2,7 +2,12 @@
 
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Loader2,
@@ -58,12 +63,22 @@ import {
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import type { GalleryItemDTO } from '@/lib/serializers/gallery';
 import type {
   GalleryItemCreateInput,
   GalleryItemUpdateInput,
 } from '@/lib/validation/gallery';
 import { Switch } from '@/components/ui/switch';
+import { cn } from '@/lib/utils';
 
 const galleryFormSchema = z.object({
   gCategory: z.string().trim().min(1, 'Category is required.'),
@@ -80,8 +95,31 @@ const galleryFormSchema = z.object({
 type GalleryFormValues = z.infer<typeof galleryFormSchema>;
 
 type UploadResult = { key: string; url: string };
+type GalleryMeta = {
+  page: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  totalCategories: number;
+  categoryCounts: Record<string, number>;
+  latestCreatedAt: string | null;
+};
 
-const galleryQueryKey = ['admin', 'gallery-items'];
+type GalleryResponse = {
+  data: GalleryItemDTO[];
+  meta: GalleryMeta;
+};
+
+type FetchGalleryItemsParams = {
+  page: number;
+  pageSize: number;
+};
+
+const galleryQueryKeyRoot = ['admin', 'gallery-items'] as const;
+const galleryQueryKey = (page: number, pageSize: number) =>
+  [...galleryQueryKeyRoot, { page, pageSize }] as const;
+type GalleryQueryKey = ReturnType<typeof galleryQueryKey>;
+
 const GALLERY_BUCKET_KEY = 'flamingo-cafe/';
 
 function normalizeCaptionValue(value: string | null | undefined) {
@@ -93,15 +131,129 @@ function normalizeCaptionValue(value: string | null | undefined) {
   return trimmed.length === 0 ? null : trimmed;
 }
 
-async function fetchGalleryItems(): Promise<GalleryItemDTO[]> {
-  const response = await fetch('/api/gallery', { cache: 'no-store' });
-  const payload = await response.json().catch(() => ({}));
+async function fetchGalleryItems(
+  params: FetchGalleryItemsParams
+): Promise<GalleryResponse> {
+  const searchParams = new URLSearchParams({
+    page: String(params.page),
+    pageSize: String(params.pageSize),
+  });
+
+  const response = await fetch(`/api/gallery?${searchParams.toString()}`, {
+    cache: 'no-store',
+  });
+
+  const payload = (await response.json().catch(() => ({}))) as {
+    data?: unknown;
+    meta?: Partial<GalleryMeta> & {
+      categoryCounts?: Record<string, unknown>;
+    };
+    error?: string;
+  };
 
   if (!response.ok) {
     throw new Error(payload?.error ?? 'Failed to load gallery items.');
   }
 
-  return (payload?.data ?? []) as GalleryItemDTO[];
+  const data = Array.isArray(payload?.data)
+    ? (payload.data as GalleryItemDTO[])
+    : [];
+
+  const rawMeta = payload?.meta ?? {};
+  const categoryCounts =
+    rawMeta.categoryCounts && typeof rawMeta.categoryCounts === 'object'
+      ? Object.entries(rawMeta.categoryCounts).reduce<Record<string, number>>(
+          (accumulator, [key, value]) => {
+            if (typeof value === 'number' && Number.isFinite(value)) {
+              accumulator[key] = value;
+            }
+            return accumulator;
+          },
+          {}
+        )
+      : {};
+
+  const totalItems =
+    typeof rawMeta.totalItems === 'number' &&
+    Number.isFinite(rawMeta.totalItems)
+      ? rawMeta.totalItems
+      : data.length;
+
+  const totalPages =
+    typeof rawMeta.totalPages === 'number' &&
+    Number.isFinite(rawMeta.totalPages)
+      ? Math.max(1, rawMeta.totalPages)
+      : Math.max(1, Math.ceil(Math.max(totalItems, 1) / params.pageSize));
+
+  const meta: GalleryMeta = {
+    page:
+      typeof rawMeta.page === 'number' && Number.isFinite(rawMeta.page)
+        ? Math.max(1, rawMeta.page)
+        : params.page,
+    pageSize:
+      typeof rawMeta.pageSize === 'number' && Number.isFinite(rawMeta.pageSize)
+        ? Math.max(1, Math.min(50, rawMeta.pageSize))
+        : params.pageSize,
+    totalItems,
+    totalPages,
+    totalCategories:
+      typeof rawMeta.totalCategories === 'number' &&
+      Number.isFinite(rawMeta.totalCategories)
+        ? Math.max(0, rawMeta.totalCategories)
+        : Object.keys(categoryCounts).length,
+    categoryCounts,
+    latestCreatedAt:
+      typeof rawMeta.latestCreatedAt === 'string' &&
+      rawMeta.latestCreatedAt.length > 0
+        ? rawMeta.latestCreatedAt
+        : null,
+  };
+
+  return { data, meta };
+}
+
+type PaginationRangeItem = number | 'ellipsis';
+
+function buildPaginationRange(
+  currentPage: number,
+  totalPages: number
+): PaginationRangeItem[] {
+  if (totalPages <= 6) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  const range: PaginationRangeItem[] = [1];
+  const siblings = 1;
+
+  const clamp = (value: number, minimum: number, maximum: number) =>
+    Math.min(Math.max(value, minimum), maximum);
+
+  let leftSibling = clamp(currentPage - siblings, 2, totalPages - 1);
+  let rightSibling = clamp(currentPage + siblings, 2, totalPages - 1);
+
+  if (currentPage <= 3) {
+    leftSibling = 2;
+    rightSibling = 3;
+  } else if (currentPage >= totalPages - 2) {
+    leftSibling = totalPages - 3;
+    rightSibling = totalPages - 2;
+  }
+
+  if (leftSibling > 2) {
+    range.push('ellipsis');
+  }
+
+  for (let page = leftSibling; page <= rightSibling; page += 1) {
+    range.push(page);
+  }
+
+  if (rightSibling < totalPages - 1) {
+    range.push('ellipsis');
+  }
+
+  range.push(totalPages);
+
+  return range.filter((value, index, array) => array.indexOf(value) === index);
 }
 
 async function uploadGalleryImage(file: File): Promise<UploadResult> {
@@ -229,17 +381,41 @@ export default function AdminGalleryPage() {
     }
   }, [editDialogOpen, editForm]);
 
-  const galleryQuery = useQuery({
-    queryKey: galleryQueryKey,
-    queryFn: fetchGalleryItems,
+  const [pagination, setPagination] = useState<FetchGalleryItemsParams>({
+    page: 1,
+    pageSize: 10,
   });
+
+  const galleryQuery = useQuery<
+    GalleryResponse,
+    Error,
+    GalleryResponse,
+    GalleryQueryKey
+  >({
+    queryKey: galleryQueryKey(pagination.page, pagination.pageSize),
+    queryFn: () => fetchGalleryItems(pagination),
+    placeholderData: keepPreviousData,
+  });
+
+  useEffect(() => {
+    const metaPage = galleryQuery.data?.meta?.page;
+    if (!metaPage) return;
+    if (metaPage !== pagination.page) {
+      setPagination((previous) =>
+        previous.page === metaPage ? previous : { ...previous, page: metaPage }
+      );
+    }
+  }, [galleryQuery.data?.meta?.page, pagination.page]);
 
   const createGalleryItemMutation = useMutation({
     mutationFn: createGalleryItem,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: galleryQueryKey });
+      queryClient.invalidateQueries({ queryKey: galleryQueryKeyRoot });
       toast.success('Gallery item added.');
       setCreateDialogOpen(false);
+      setPagination((previous) =>
+        previous.page === 1 ? previous : { ...previous, page: 1 }
+      );
     },
   });
 
@@ -247,7 +423,7 @@ export default function AdminGalleryPage() {
     mutationFn: ({ id, data }: { id: string; data: GalleryItemUpdateInput }) =>
       updateGalleryItem(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: galleryQueryKey });
+      queryClient.invalidateQueries({ queryKey: galleryQueryKeyRoot });
       toast.success('Gallery item updated.');
       setEditDialogOpen(false);
     },
@@ -256,7 +432,7 @@ export default function AdminGalleryPage() {
   const deleteGalleryItemMutation = useMutation({
     mutationFn: deleteGalleryItem,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: galleryQueryKey });
+      queryClient.invalidateQueries({ queryKey: galleryQueryKeyRoot });
       toast.success('Gallery item removed.');
     },
     onError: (error: unknown) => {
@@ -272,17 +448,26 @@ export default function AdminGalleryPage() {
   const isUpdating = updateGalleryItemMutation.isPending;
   const isDeleting = deleteGalleryItemMutation.isPending;
 
-  const items = galleryQuery.data ?? [];
-  const categoryCounts = useMemo(() => {
-    return items.reduce<Record<string, number>>((acc, item) => {
+  const items = galleryQuery.data?.data ?? [];
+  const fallbackCategoryCounts = useMemo(() => {
+    return items.reduce<Record<string, number>>((accumulator, item) => {
       const key = item.gCategory.trim() || 'Uncategorised';
-      acc[key] = (acc[key] ?? 0) + 1;
-      return acc;
+      accumulator[key] = (accumulator[key] ?? 0) + 1;
+      return accumulator;
     }, {});
   }, [items]);
 
-  const totalItems = items.length;
-  const totalCategories = Object.keys(categoryCounts).length;
+  const meta = galleryQuery.data?.meta;
+  const categoryCounts = meta?.categoryCounts ?? fallbackCategoryCounts;
+  const totalItems = meta?.totalItems ?? items.length;
+  const totalCategories =
+    meta?.totalCategories ?? Object.keys(categoryCounts).length;
+  const totalPages =
+    meta?.totalPages ??
+    Math.max(1, Math.ceil(Math.max(totalItems, 1) / pagination.pageSize));
+  const currentPage = meta?.page ?? pagination.page;
+  const pageSize = meta?.pageSize ?? pagination.pageSize;
+
   const latestItemTimestamp = useMemo(() => {
     if (items.length === 0) return null;
     return items
@@ -291,12 +476,37 @@ export default function AdminGalleryPage() {
       .reduce((latest, current) => Math.max(latest, current), 0);
   }, [items]);
 
-  const formattedLatestUpload = latestItemTimestamp
+  const resolvedLatestTimestamp = meta?.latestCreatedAt
+    ? new Date(meta.latestCreatedAt).getTime()
+    : latestItemTimestamp;
+
+  const formattedLatestUpload = resolvedLatestTimestamp
     ? new Intl.DateTimeFormat('en-US', {
         dateStyle: 'medium',
         timeStyle: 'short',
-      }).format(new Date(latestItemTimestamp))
+      }).format(new Date(resolvedLatestTimestamp))
     : '--';
+
+  const paginationRange = useMemo(
+    () => buildPaginationRange(currentPage, totalPages),
+    [currentPage, totalPages]
+  );
+
+  const isPageLoading = galleryQuery.isFetching;
+  const canGoPrevious = currentPage > 1;
+  const canGoNext = currentPage < totalPages;
+
+  const currentRangeStart =
+    totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const currentRangeEnd =
+    totalItems === 0 ? 0 : currentRangeStart + items.length - 1;
+
+  const handlePageChange = (nextPage: number) => {
+    if (nextPage === currentPage) return;
+    if (nextPage < 1 || nextPage > totalPages) return;
+    if (isPageLoading) return;
+    setPagination((previous) => ({ ...previous, page: nextPage }));
+  };
 
   const handleSubmit = async (values: GalleryFormValues) => {
     if (!selectedFile) {
@@ -786,20 +996,101 @@ export default function AdminGalleryPage() {
             </div>
           )}
 
+          {items.length > 0 && totalPages > 1 ? (
+            <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+              <p className="text-sm text-muted-foreground">
+                Showing {currentRangeStart.toLocaleString()}-
+                {currentRangeEnd.toLocaleString()} of{' '}
+                {totalItems.toLocaleString()} items
+              </p>
+              <Pagination className="w-full justify-center sm:w-auto sm:justify-end">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      href="#"
+                      aria-disabled={!canGoPrevious || isPageLoading}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        if (!canGoPrevious || isPageLoading) return;
+                        handlePageChange(currentPage - 1);
+                      }}
+                      className={cn(
+                        'transition-opacity',
+                        (!canGoPrevious || isPageLoading) &&
+                          'pointer-events-none opacity-50'
+                      )}
+                    />
+                  </PaginationItem>
+
+                  {paginationRange.map((pageEntry, index) => (
+                    <PaginationItem
+                      key={
+                        pageEntry === 'ellipsis'
+                          ? `ellipsis-${index}`
+                          : `page-${pageEntry}`
+                      }
+                    >
+                      {pageEntry === 'ellipsis' ? (
+                        <PaginationEllipsis />
+                      ) : (
+                        <PaginationLink
+                          href="#"
+                          isActive={pageEntry === currentPage}
+                          aria-label={`Go to page ${pageEntry}`}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            handlePageChange(pageEntry);
+                          }}
+                          className={cn(
+                            'transition-opacity',
+                            isPageLoading && pageEntry !== currentPage
+                              ? 'pointer-events-none opacity-50'
+                              : undefined
+                          )}
+                        >
+                          {pageEntry}
+                        </PaginationLink>
+                      )}
+                    </PaginationItem>
+                  ))}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      href="#"
+                      aria-disabled={!canGoNext || isPageLoading}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        if (!canGoNext || isPageLoading) return;
+                        handlePageChange(currentPage + 1);
+                      }}
+                      className={cn(
+                        'transition-opacity',
+                        (!canGoNext || isPageLoading) &&
+                          'pointer-events-none opacity-50'
+                      )}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          ) : null}
+
           {items.length > 0 ? (
             <div className="mt-8 flex flex-wrap gap-2 text-sm text-muted-foreground">
               <span className="font-medium text-foreground">Categories:</span>
-              {Object.entries(categoryCounts).map(([category, count]) => (
-                <span
-                  key={category}
-                  className="inline-flex items-center gap-1 rounded-full border border-border/60 px-3 py-1"
-                >
-                  {category}
-                  <span className="text-xs text-muted-foreground">
-                    ({count})
+              {(Object.entries(categoryCounts) as Array<[string, number]>).map(
+                ([category, count]) => (
+                  <span
+                    key={category}
+                    className="inline-flex items-center gap-1 rounded-full border border-border/60 px-3 py-1"
+                  >
+                    {category}
+                    <span className="text-xs text-muted-foreground">
+                      ({count})
+                    </span>
                   </span>
-                </span>
-              ))}
+                )
+              )}
             </div>
           ) : null}
         </CardContent>
