@@ -79,6 +79,7 @@ import type {
 } from '@/lib/validation/gallery';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
+import { buildPaginationRange } from '@/lib/pagination';
 
 const galleryFormSchema = z.object({
   gCategory: z.string().trim().min(1, 'Category is required.'),
@@ -212,50 +213,6 @@ async function fetchGalleryItems(
   return { data, meta };
 }
 
-type PaginationRangeItem = number | 'ellipsis';
-
-function buildPaginationRange(
-  currentPage: number,
-  totalPages: number
-): PaginationRangeItem[] {
-  if (totalPages <= 6) {
-    return Array.from({ length: totalPages }, (_, index) => index + 1);
-  }
-
-  const range: PaginationRangeItem[] = [1];
-  const siblings = 1;
-
-  const clamp = (value: number, minimum: number, maximum: number) =>
-    Math.min(Math.max(value, minimum), maximum);
-
-  let leftSibling = clamp(currentPage - siblings, 2, totalPages - 1);
-  let rightSibling = clamp(currentPage + siblings, 2, totalPages - 1);
-
-  if (currentPage <= 3) {
-    leftSibling = 2;
-    rightSibling = 3;
-  } else if (currentPage >= totalPages - 2) {
-    leftSibling = totalPages - 3;
-    rightSibling = totalPages - 2;
-  }
-
-  if (leftSibling > 2) {
-    range.push('ellipsis');
-  }
-
-  for (let page = leftSibling; page <= rightSibling; page += 1) {
-    range.push(page);
-  }
-
-  if (rightSibling < totalPages - 1) {
-    range.push('ellipsis');
-  }
-
-  range.push(totalPages);
-
-  return range.filter((value, index, array) => array.indexOf(value) === index);
-}
-
 async function uploadGalleryImage(file: File): Promise<UploadResult> {
   const formData = new FormData();
   formData.append('file', file);
@@ -333,6 +290,8 @@ export default function AdminGalleryPage() {
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<GalleryItemDTO | null>(null);
+  const [editSelectedFile, setEditSelectedFile] = useState<File | null>(null);
+  const [editPreviewUrl, setEditPreviewUrl] = useState<string | null>(null);
 
   const form = useForm<GalleryFormValues>({
     resolver: zodResolver(galleryFormSchema),
@@ -378,8 +337,24 @@ export default function AdminGalleryPage() {
     if (!editDialogOpen) {
       setEditingItem(null);
       editForm.reset({ gCategory: '', caption: '', visible: true });
+      setEditSelectedFile(null);
+      setEditPreviewUrl(null);
     }
   }, [editDialogOpen, editForm]);
+
+  useEffect(() => {
+    if (!editSelectedFile) {
+      setEditPreviewUrl(editingItem?.galleryUrl ?? null);
+      return;
+    }
+
+    const url = URL.createObjectURL(editSelectedFile);
+    setEditPreviewUrl(url);
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [editSelectedFile, editingItem?.galleryUrl]);
 
   const [pagination, setPagination] = useState<FetchGalleryItemsParams>({
     page: 1,
@@ -425,6 +400,8 @@ export default function AdminGalleryPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: galleryQueryKeyRoot });
       toast.success('Gallery item updated.');
+      setEditSelectedFile(null);
+      setEditPreviewUrl(null);
       setEditDialogOpen(false);
     },
   });
@@ -561,17 +538,40 @@ export default function AdminGalleryPage() {
       payload.visible = values.visible;
     }
 
-    if (Object.keys(payload).length === 0) {
-      toast.info('No changes to update.');
-      return;
-    }
+    let uploaded: UploadResult | null = null;
+    const previousKey = buildDeletePayloadFromUrl(editingItem.galleryUrl);
 
     try {
+      if (editSelectedFile) {
+        uploaded = await uploadGalleryImage(editSelectedFile);
+        payload.galleryUrl = uploaded.url;
+      }
+
+      if (Object.keys(payload).length === 0) {
+        toast.info('No changes to update.');
+        return;
+      }
+
       await updateGalleryItemMutation.mutateAsync({
         id: editingItem.id,
         data: payload,
       });
+
+      if (uploaded?.key && previousKey && previousKey !== uploaded.key) {
+        await fetch('/api/gallery/upload', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: previousKey }),
+        }).catch(() => undefined);
+      }
     } catch (error) {
+      if (uploaded?.key) {
+        await fetch('/api/gallery/upload', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: uploaded.key }),
+        }).catch(() => undefined);
+      }
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
@@ -588,6 +588,8 @@ export default function AdminGalleryPage() {
       visible: item.visible ?? true,
     });
     setEditDialogOpen(true);
+    setEditSelectedFile(null);
+    setEditPreviewUrl(item.galleryUrl);
   };
 
   const handleDelete = async (item: GalleryItemDTO) => {
@@ -1101,8 +1103,8 @@ export default function AdminGalleryPage() {
           <DialogHeader>
             <DialogTitle>Edit gallery item</DialogTitle>
             <DialogDescription>
-              Update the category, caption, or visibility without re-uploading
-              the image.
+              Update the category, caption, visibility, or swap the image while
+              keeping everything in sync.
             </DialogDescription>
           </DialogHeader>
 
@@ -1182,27 +1184,64 @@ export default function AdminGalleryPage() {
                       </FormItem>
                     )}
                   />
+
+                  <div className="flex items-start gap-3 rounded-lg border border-dashed border-border/70 p-4">
+                    <UploadCloud
+                      className="mt-1 h-5 w-5 text-primary"
+                      aria-hidden
+                    />
+                    <div className="flex-1 space-y-2 text-sm">
+                      <div>
+                        <p className="font-medium">Replace image</p>
+                        <p className="text-xs text-muted-foreground">
+                          Upload a JPG, PNG, or WEBP to replace the current
+                          gallery image. The new image will go live after
+                          saving.
+                        </p>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Input
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp"
+                          onChange={(event) => {
+                            const file = event.target.files?.[0];
+                            setEditSelectedFile(file ?? null);
+                          }}
+                          disabled={isUpdating}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="space-y-3 rounded-lg border border-border/70 bg-muted/10 p-4">
                   <p className="text-sm font-medium text-muted-foreground">
-                    Current image
+                    {editSelectedFile ? 'New image preview' : 'Current image'}
                   </p>
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-md border border-border/50">
-                    <Image
-                      src={editingItem.galleryUrl}
-                      alt={
-                        editingItem.caption ??
-                        `${editingItem.gCategory} showcase`
-                      }
-                      fill
-                      sizes="(min-width: 768px) 260px, 100vw"
-                      className="object-cover"
-                    />
-                  </div>
+                  {editPreviewUrl ? (
+                    <div className="relative aspect-[4/3] overflow-hidden rounded-md border border-border/50">
+                      <Image
+                        src={editPreviewUrl}
+                        alt={
+                          editSelectedFile
+                            ? `Preview of updated image for ${editingItem.gCategory}`
+                            : editingItem.caption ??
+                              `${editingItem.gCategory} showcase`
+                        }
+                        fill
+                        sizes="(min-width: 768px) 260px, 100vw"
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex aspect-[4/3] items-center justify-center rounded-md border border-dashed border-border/60 bg-muted/30 text-xs text-muted-foreground">
+                      No image available
+                    </div>
+                  )}
                   <p className="text-xs text-muted-foreground">
-                    Image updates are managed through a new upload. Remove the
-                    item and add it again to replace the visual.
+                    {editSelectedFile
+                      ? 'Save changes to publish this replacement image.'
+                      : 'Select a new image to replace the current gallery visual.'}
                   </p>
                 </div>
 
