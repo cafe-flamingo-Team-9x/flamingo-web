@@ -4,7 +4,7 @@ import { AlertTriangle } from "lucide-react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,25 @@ function getErrorMessage(error?: string | null) {
 }
 
 export default function AdminLoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-background via-background to-muted px-4 py-16">
+          <Card className="w-full max-w-md border-border/60 shadow-xl py-12 text-center">
+            <CardHeader className="space-y-4 py-0">
+              <CardTitle className="text-2xl">Loading sign-in…</CardTitle>
+              <CardDescription>Please wait while we prepare the login experience.</CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      }
+    >
+      <AdminLoginPageContent />
+    </Suspense>
+  );
+}
+
+function AdminLoginPageContent() {
   const searchParams = useSearchParams();
   const errorParam = searchParams?.get("error");
   const callbackUrlParam = searchParams?.get("callbackUrl");
