@@ -1,5 +1,6 @@
 'use client';
 
+import type { KeyboardEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import {
   AlertDialog,
@@ -21,6 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Dialog,
   DialogContent,
@@ -339,6 +341,8 @@ export default function AdminMenuPage() {
   const [editPreview, setEditPreview] = useState<string | null>(null);
   const [shouldRemoveExistingImage, setShouldRemoveExistingImage] =
     useState(false);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<MenuItemDTO | null>(null);
 
   const createForm = useForm<MenuItemFormValues>({
     resolver: zodResolver(menuItemCreateSchema),
@@ -667,6 +671,37 @@ export default function AdminMenuPage() {
     }
   };
 
+  const openEditDialog = (item: MenuItemDTO) => {
+    setEditingItem(item);
+    editForm.reset({
+      name: item.name,
+      description: item.description ?? '',
+      price: String(item.price),
+      category: item.category,
+      imageUrl: item.imageUrl ?? '',
+      visible: item.visible,
+    });
+    setEditPreview(item.imageUrl ?? null);
+    setEditImageFile(null);
+    setShouldRemoveExistingImage(false);
+    setEditDialogOpen(true);
+  };
+
+  const openDetailDialog = (item: MenuItemDTO) => {
+    setSelectedItem(item);
+    setDetailDialogOpen(true);
+  };
+
+  const handleRowKeyDown = (
+    event: KeyboardEvent<HTMLTableRowElement>,
+    item: MenuItemDTO
+  ) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openDetailDialog(item);
+    }
+  };
+
   return (
     <section className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -689,13 +724,14 @@ export default function AdminMenuPage() {
             onClick={() => menuQuery.refetch()}
             disabled={menuQuery.isFetching}
             aria-label="Refresh"
+            className="transition-transform duration-150 hover:-translate-y-0.5"
           >
             <RefreshCcw className="h-4 w-4" aria-hidden />
           </Button>
 
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="gap-2">
+              <Button className="gap-2 transition-transform duration-150 hover:-translate-y-0.5">
                 <Plus className="h-4 w-4" aria-hidden />
                 Add menu item
               </Button>
@@ -729,7 +765,7 @@ export default function AdminMenuPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-dashed border-primary/30">
+        <Card className="border-dashed border-primary/30 transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-lg">
           <CardHeader className="pb-4">
             <CardTitle className="text-base">Total items</CardTitle>
             <CardDescription>Published and draft menu items</CardDescription>
@@ -738,7 +774,7 @@ export default function AdminMenuPage() {
             {items.length}
           </CardContent>
         </Card>
-        <Card className="border-dashed border-primary/30">
+        <Card className="border-dashed border-primary/30 transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-lg">
           <CardHeader className="pb-4">
             <CardTitle className="text-base flex items-center gap-2">
               <Eye className="h-4 w-4 text-green-500" aria-hidden />
@@ -752,7 +788,7 @@ export default function AdminMenuPage() {
             {totalVisible}
           </CardContent>
         </Card>
-        <Card className="border-dashed border-primary/30">
+        <Card className="border-dashed border-primary/30 transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-lg">
           <CardHeader className="pb-4">
             <CardTitle className="text-base flex items-center gap-2">
               <EyeOff className="h-4 w-4 text-muted-foreground" aria-hidden />
@@ -764,7 +800,7 @@ export default function AdminMenuPage() {
             {totalHidden}
           </CardContent>
         </Card>
-        <Card className="border-dashed border-primary/30">
+        <Card className="border-dashed border-primary/30 transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-lg">
           <CardHeader className="pb-4">
             <CardTitle className="text-base">Categories</CardTitle>
             <CardDescription>
@@ -800,9 +836,24 @@ export default function AdminMenuPage() {
                 }
               >
                 <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="visible">Visible</TabsTrigger>
-                  <TabsTrigger value="hidden">Hidden</TabsTrigger>
+                  <TabsTrigger
+                    value="all"
+                    className="cursor-pointer transition-colors hover:text-primary"
+                  >
+                    All
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="visible"
+                    className="cursor-pointer transition-colors hover:text-primary"
+                  >
+                    Visible
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="hidden"
+                    className="cursor-pointer transition-colors hover:text-primary"
+                  >
+                    Hidden
+                  </TabsTrigger>
                 </TabsList>
               </Tabs>
             </div>
@@ -832,7 +883,7 @@ export default function AdminMenuPage() {
               </div>
             </div>
           ) : (
-            <div className="overflow-hidden rounded-lg border">
+            <div className="overflow-hidden rounded-lg border transition-shadow duration-200 hover:shadow-lg">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -847,31 +898,37 @@ export default function AdminMenuPage() {
                 </TableHeader>
                 <TableBody>
                   {filteredItems.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <p className="font-medium text-foreground">
-                            {item.name}
-                          </p>
-                          {item.description ? (
-                            <p className="text-xs text-muted-foreground line-clamp-2">
-                              {item.description}
-                            </p>
-                          ) : null}
-                        </div>
+                    <TableRow
+                      key={item.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => openDetailDialog(item)}
+                      onKeyDown={(event) => handleRowKeyDown(event, item)}
+                      className="group cursor-pointer transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    >
+                      <TableCell className="transition-colors group-hover:text-primary">
+                        <p className="font-medium text-foreground">
+                          {item.name}
+                        </p>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="secondary" className="capitalize">
+                        <Badge
+                          variant="secondary"
+                          className="capitalize transition-colors group-hover:bg-secondary/80"
+                        >
                           {item.category}
                         </Badge>
                       </TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium transition-colors group-hover:text-primary">
                         LKR{' '}
                         {item.price.toLocaleString('en-LK', {
                           minimumFractionDigits: 0,
                         })}
                       </TableCell>
-                      <TableCell>
+                      <TableCell
+                        onClick={(event) => event.stopPropagation()}
+                        onKeyDown={(event) => event.stopPropagation()}
+                      >
                         <div className="flex items-center gap-2">
                           <Switch
                             checked={item.visible}
@@ -886,34 +943,30 @@ export default function AdminMenuPage() {
                               deleteMenuItemMutation.isPending
                             }
                             aria-label={`Toggle visibility for ${item.name}`}
+                            className="transition-transform duration-150"
+                            onClick={(event) => event.stopPropagation()}
                           />
                           <span className="text-sm text-muted-foreground">
                             {item.visible ? 'Visible' : 'Hidden'}
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell
+                        className="text-right"
+                        onClick={(event) => event.stopPropagation()}
+                        onKeyDown={(event) => event.stopPropagation()}
+                      >
                         <div className="flex justify-end gap-2">
                           <Button
                             type="button"
                             variant="ghost"
                             size="icon"
-                            onClick={() => {
-                              setEditingItem(item);
-                              editForm.reset({
-                                name: item.name,
-                                description: item.description ?? '',
-                                price: String(item.price),
-                                category: item.category,
-                                imageUrl: item.imageUrl ?? '',
-                                visible: item.visible,
-                              });
-                              setEditPreview(item.imageUrl ?? null);
-                              setEditImageFile(null);
-                              setShouldRemoveExistingImage(false);
-                              setEditDialogOpen(true);
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              openEditDialog(item);
                             }}
                             aria-label={`Edit ${item.name}`}
+                            className="transition-colors hover:text-primary"
                           >
                             <Pencil className="h-4 w-4" aria-hidden />
                           </Button>
@@ -926,6 +979,8 @@ export default function AdminMenuPage() {
                                 size="icon"
                                 aria-label={`Delete ${item.name}`}
                                 disabled={deleteMenuItemMutation.isPending}
+                                onClick={(event) => event.stopPropagation()}
+                                className="transition-colors hover:text-destructive"
                               >
                                 <Trash2
                                   className="h-4 w-4 text-destructive"
@@ -964,6 +1019,93 @@ export default function AdminMenuPage() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog
+        open={detailDialogOpen && !!selectedItem}
+        onOpenChange={(open) => {
+          setDetailDialogOpen(open);
+          if (!open) {
+            setSelectedItem(null);
+          }
+        }}
+      >
+        <DialogContent className="max-h-[80vh] max-w-xl">
+          {selectedItem ? (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  {selectedItem.name}
+                  <Badge
+                    variant={selectedItem.visible ? 'default' : 'secondary'}
+                  >
+                    {selectedItem.visible ? 'Visible' : 'Hidden'}
+                  </Badge>
+                </DialogTitle>
+                <DialogDescription>
+                  Review full details for this menu item.
+                </DialogDescription>
+              </DialogHeader>
+              <ScrollArea className="max-h-[50vh] pr-4">
+                <div className="space-y-4">
+                  {selectedItem.imageUrl ? (
+                    <div className="overflow-hidden rounded-lg border border-border/60">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={selectedItem.imageUrl}
+                        alt={`${selectedItem.name} image`}
+                        className="aspect-[4/3] w-full object-cover"
+                      />
+                    </div>
+                  ) : null}
+                  <div className="flex flex-wrap items-center gap-3 text-sm">
+                    <Badge variant="secondary" className="capitalize">
+                      {selectedItem.category}
+                    </Badge>
+                    <span className="font-medium">
+                      LKR{' '}
+                      {selectedItem.price.toLocaleString('en-LK', {
+                        minimumFractionDigits: 0,
+                      })}
+                    </span>
+                    <span className="text-muted-foreground">
+                      Created{' '}
+                      {new Date(selectedItem.createdAt).toLocaleString('en-LK')}
+                    </span>
+                    <span className="text-muted-foreground">
+                      Updated{' '}
+                      {new Date(selectedItem.updatedAt).toLocaleString('en-LK')}
+                    </span>
+                  </div>
+                  <div className="space-y-1 pb-2">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Description
+                    </h3>
+                    <p className="text-sm leading-relaxed">
+                      {selectedItem.description ?? 'No description provided.'}
+                    </p>
+                  </div>
+                </div>
+              </ScrollArea>
+              <DialogFooter className="gap-2 sm:justify-between">
+                <div className="text-xs text-muted-foreground">
+                  Item ID: {selectedItem.id}
+                </div>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    setDetailDialogOpen(false);
+                    openEditDialog(selectedItem);
+                  }}
+                  className="gap-2"
+                >
+                  <Pencil className="h-4 w-4" aria-hidden />
+                  Edit item
+                </Button>
+              </DialogFooter>
+            </>
+          ) : null}
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent className="max-w-2xl">
