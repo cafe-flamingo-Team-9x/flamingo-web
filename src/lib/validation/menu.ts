@@ -1,8 +1,11 @@
 import { z } from 'zod';
 
 const sanitizedDescription = z
-  .union([z.string().trim(), z.literal('')])
-  .transform((value) => (value === '' ? undefined : value))
+  .union([z.string().trim(), z.literal(''), z.null()])
+  .transform((value) => {
+    if (value === '') return null;
+    return value;
+  })
   .optional();
 
 const sanitizedImageUrl = z

@@ -72,6 +72,7 @@ export async function PATCH(
   const parsed = menuItemUpdateSchema.safeParse(body);
 
   if (!parsed.success) {
+    console.error('menu item update validation failed', parsed.error.flatten());
     return NextResponse.json(
       {
         error: 'Invalid menu item payload.',

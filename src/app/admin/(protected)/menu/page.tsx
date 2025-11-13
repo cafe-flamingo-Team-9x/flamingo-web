@@ -605,9 +605,8 @@ export default function AdminMenuPage() {
         payload.name = parsed.name;
       }
 
-      const parsedDescription = parsed.description ?? undefined;
-      const currentDescription = editingItem.description ?? undefined;
-      if (parsedDescription !== currentDescription) {
+      const parsedDescription = parsed.description ?? null;
+      if (parsedDescription !== (editingItem.description ?? null)) {
         payload.description = parsedDescription;
       }
 
