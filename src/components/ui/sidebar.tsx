@@ -14,7 +14,6 @@ import {
   Image as ImageIcon,
   LogOut,
   Menu as MenuIcon,
-  MessageCircle,
   PanelLeft,
   User,
 } from 'lucide-react';
@@ -783,11 +782,6 @@ const ADMIN_NAV_ITEMS: AdminNavItem[] = [
     icon: MenuIcon,
   },
   {
-    label: 'Feedback & Ratings',
-    href: '/admin/feedback',
-    icon: MessageCircle,
-  },
-  {
     label: 'Gallery',
     href: '/admin/gallery',
     icon: ImageIcon,
@@ -867,7 +861,7 @@ function AdminSidebarContent({
       </div>
 
       <ScrollArea className="flex-1">
-        <nav className="flex flex-col gap-2 px-3 py-4">
+        <nav className="flex flex-col gap-3 px-4 py-6">
           {ADMIN_NAV_ITEMS.map((item) => {
             const isActive = activeHref === item.href;
 
