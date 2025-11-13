@@ -11,6 +11,7 @@ export const metadata = {
 };
 
 export const revalidate = 120;
+const PAGE_SIZE = 12;
 
 type GalleryDisplayItem = {
   id: string;
@@ -99,8 +100,18 @@ async function getGalleryItems(): Promise<GalleryDisplayItem[]> {
   }));
 }
 
+type GalleryPage = {
+  items: GalleryDisplayItem[];
+  hasNextPage: boolean;
+};
+
 export default async function Gallery() {
   const galleryItems = await getGalleryItems();
+
+  const galleryPage: GalleryPage = {
+    items: galleryItems.slice(0, PAGE_SIZE),
+    hasNextPage: galleryItems.length > PAGE_SIZE,
+  };
 
   return (
     <div className="min-h-screen">
@@ -120,8 +131,8 @@ export default async function Gallery() {
 
       <section className="bg-background py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {galleryItems.map((item) => (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {galleryPage.items.map((item) => (
               <div
                 key={item.id}
                 className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-soft transition-all duration-300 hover-lift hover:shadow-elegant"

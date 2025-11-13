@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 
@@ -17,6 +18,11 @@ async function ensureAdmin() {
 
   return session;
 }
+
+const galleryQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(50).default(12),
+});
 
 export async function GET(request: NextRequest) {
   const sessionOrResponse = await ensureAdmin();

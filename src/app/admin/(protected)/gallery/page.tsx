@@ -358,7 +358,7 @@ export default function AdminGalleryPage() {
 
   const [pagination, setPagination] = useState<FetchGalleryItemsParams>({
     page: 1,
-    pageSize: 10,
+    pageSize: 12,
   });
 
   const galleryQuery = useQuery<
@@ -866,7 +866,7 @@ export default function AdminGalleryPage() {
         <CardContent>
           {galleryQuery.isLoading ? (
             <div className="space-y-4">
-              {Array.from({ length: 6 }).map((_, index) => (
+              {Array.from({ length: pagination.pageSize }).map((_, index) => (
                 <Skeleton key={index} className="h-20 w-full rounded-md" />
               ))}
             </div>
