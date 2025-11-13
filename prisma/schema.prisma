@@ -77,3 +77,14 @@ model MenuItem {
   @@index([category])
   @@index([visible])
 }
+
+model GalleryItem {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  gCategory  String
+  caption    String?
+  galleryUrl String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([gCategory])
+}
