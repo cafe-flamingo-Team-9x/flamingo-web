@@ -2,6 +2,16 @@ import Image from 'next/image';
 
 import Footer from '@/components/footer';
 import Navigation from '@/components/navigation';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { buildPaginationRange } from '@/lib/pagination';
 import { prisma } from '@/lib/prisma';
 
 export const metadata = {
@@ -81,37 +91,69 @@ const FALLBACK_GALLERY_ITEMS: GalleryDisplayItem[] = [
   },
 ];
 
-async function getGalleryItems(): Promise<GalleryDisplayItem[]> {
-  const items: GalleryItemRecord[] = await prisma.galleryItem.findMany({
-    orderBy: { createdAt: 'desc' },
+async function getGalleryItems(page: number = 1): Promise<{
+  items: GalleryDisplayItem[];
+  totalPages: number;
+  currentPage: number;
+}> {
+  const totalCount = await prisma.galleryItem.count({
+    where: { visible: { not: false } },
   });
 
-  const visibleItems = items.filter((item) => item.visible !== false);
+  // If no items in database, return fallback items
+  if (totalCount === 0) {
+    const totalPages = Math.ceil(FALLBACK_GALLERY_ITEMS.length / PAGE_SIZE);
+    const safePage = Math.max(1, Math.min(page, totalPages));
+    const startIndex = (safePage - 1) * PAGE_SIZE;
+    const endIndex = startIndex + PAGE_SIZE;
 
-  if (visibleItems.length === 0) {
-    return [...FALLBACK_GALLERY_ITEMS];
+    return {
+      items: FALLBACK_GALLERY_ITEMS.slice(startIndex, endIndex),
+      totalPages,
+      currentPage: safePage,
+    };
   }
 
-  return visibleItems.map((item) => ({
-    id: item.id,
-    gCategory: item.gCategory,
-    caption: item.caption ?? null,
-    galleryUrl: item.galleryUrl,
-  }));
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const safePage = Math.max(1, Math.min(page, totalPages));
+  const skip = (safePage - 1) * PAGE_SIZE;
+
+  const items: GalleryItemRecord[] = await prisma.galleryItem.findMany({
+    where: { visible: { not: false } },
+    orderBy: { createdAt: 'desc' },
+    skip,
+    take: PAGE_SIZE,
+  });
+
+  return {
+    items: items.map((item) => ({
+      id: item.id,
+      gCategory: item.gCategory,
+      caption: item.caption ?? null,
+      galleryUrl: item.galleryUrl,
+    })),
+    totalPages,
+    currentPage: safePage,
+  };
 }
 
-type GalleryPage = {
-  items: GalleryDisplayItem[];
-  hasNextPage: boolean;
+type GalleryPageProps = {
+  searchParams: Promise<{ page?: string }>;
 };
 
-export default async function Gallery() {
-  const galleryItems = await getGalleryItems();
+export default async function Gallery({ searchParams }: GalleryPageProps) {
+  const params = await searchParams;
+  const pageParam = params.page;
+  const currentPage = pageParam ? Number.parseInt(pageParam, 10) : 1;
+  const safePage =
+    Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
 
-  const galleryPage: GalleryPage = {
-    items: galleryItems.slice(0, PAGE_SIZE),
-    hasNextPage: galleryItems.length > PAGE_SIZE,
-  };
+  const {
+    items,
+    totalPages,
+    currentPage: actualPage,
+  } = await getGalleryItems(safePage);
+  const paginationRange = buildPaginationRange(actualPage, totalPages);
 
   return (
     <div className="min-h-screen bg-white">
@@ -132,7 +174,7 @@ export default async function Gallery() {
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {galleryPage.items.map((item) => (
+            {items.map((item) => (
               <div
                 key={item.id}
                 className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-soft transition-all duration-300 hover-lift hover:shadow-elegant"
@@ -156,6 +198,66 @@ export default async function Gallery() {
               </div>
             ))}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-12">
+              <Pagination>
+                <PaginationContent>
+                  {/* Previous Button */}
+                  <PaginationItem>
+                    {actualPage > 1 ? (
+                      <PaginationPrevious
+                        href={`/gallery?page=${actualPage - 1}`}
+                        className="bg-white text-slate-900 border-slate-900 hover:bg-slate-900 hover:text-white"
+                      />
+                    ) : (
+                      <PaginationPrevious className="pointer-events-none opacity-50 bg-white text-slate-400 border-slate-300" />
+                    )}
+                  </PaginationItem>
+
+                  {/* Page Numbers */}
+                  {paginationRange.map((pageItem, index) => (
+                    <PaginationItem
+                      key={`page-${
+                        typeof pageItem === 'number'
+                          ? pageItem
+                          : `ellipsis-${index}`
+                      }`}
+                    >
+                      {pageItem === 'ellipsis' ? (
+                        <PaginationEllipsis className="text-slate-900" />
+                      ) : (
+                        <PaginationLink
+                          href={`/gallery?page=${pageItem}`}
+                          isActive={pageItem === actualPage}
+                          className={
+                            pageItem === actualPage
+                              ? 'bg-slate-900 text-white border-slate-900 hover:bg-slate-800'
+                              : 'bg-white text-slate-900 border-slate-900 hover:bg-slate-900 hover:text-white'
+                          }
+                        >
+                          {pageItem}
+                        </PaginationLink>
+                      )}
+                    </PaginationItem>
+                  ))}
+
+                  {/* Next Button */}
+                  <PaginationItem>
+                    {actualPage < totalPages ? (
+                      <PaginationNext
+                        href={`/gallery?page=${actualPage + 1}`}
+                        className="bg-white text-slate-900 border-slate-900 hover:bg-slate-900 hover:text-white"
+                      />
+                    ) : (
+                      <PaginationNext className="pointer-events-none opacity-50 bg-white text-slate-400 border-slate-300" />
+                    )}
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </div>
       </section>
 
