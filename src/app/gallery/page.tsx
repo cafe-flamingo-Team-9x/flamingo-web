@@ -114,22 +114,22 @@ export default async function Gallery() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
-      <section className="bg-gradient-dark pt-32 pb-16 text-white">
+      <section className="bg-white pt-32 pb-16">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="mb-6 text-5xl font-bold md:text-6xl">
+          <h1 className="mb-6 text-5xl font-bold text-slate-900 md:text-6xl">
             Our <span className="text-gradient-accent">Gallery</span>
           </h1>
-          <p className="mx-auto max-w-2xl text-xl text-white/80">
+          <p className="mx-auto max-w-2xl text-xl text-slate-600">
             Take a visual journey through our culinary creations and inviting
             atmosphere
           </p>
         </div>
       </section>
 
-      <section className="bg-background py-16">
+      <section className="bg-white py-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {galleryPage.items.map((item) => (
@@ -155,16 +155,6 @@ export default async function Gallery() {
                 </div>
               </div>
             ))}
-          </div>
-
-          <div className="mt-20 rounded-3xl bg-gradient-hero px-8 py-14 text-center text-white shadow-pink-glow">
-            <h2 className="mb-4 text-3xl font-semibold md:text-4xl">
-              Experience It Yourself
-            </h2>
-            <p className="mx-auto max-w-2xl text-lg text-white/85">
-              These pictures don’t do justice to the real experience. Visit us
-              and create your own memories!
-            </p>
           </div>
         </div>
       </section>
