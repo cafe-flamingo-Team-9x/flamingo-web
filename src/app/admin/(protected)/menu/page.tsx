@@ -177,20 +177,11 @@ function MenuItemForm({
                 <FormLabel>Price (LKR)</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    step="0.01"
+                    type="text"
                     inputMode="decimal"
                     placeholder="1950"
                     value={field.value ?? ''}
-                    onChange={(event) => {
-                      const raw = event.target.value;
-                      if (raw === '') {
-                        field.onChange(undefined);
-                        return;
-                      }
-
-                      field.onChange(Number(raw));
-                    }}
+                    onChange={(event) => field.onChange(event.target.value)}
                   />
                 </FormControl>
                 <FormMessage />
