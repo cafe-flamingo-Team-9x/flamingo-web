@@ -64,3 +64,32 @@ model Admin {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// Menu models for Cafe Flamingo
+model Category {
+  id    String     @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  slug  String?    @unique
+  order Int        @default(0)
+  items MenuItem[]
+}
+
+model MenuItem {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  // price stored as string to match existing seed data like "LKR 1,200"; change to numeric if you prefer
+  price       String
+  image       String?
+  available   Boolean  @default(true)
+  discountPct Int?
+  categoryId  String?  @db.ObjectId
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+
+
+
