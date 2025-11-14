@@ -95,6 +95,7 @@ model Reservation {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   phone     String
+  email     String
   date      DateTime
   time      String
   comments  String?

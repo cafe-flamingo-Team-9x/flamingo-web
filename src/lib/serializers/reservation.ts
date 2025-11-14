@@ -2,6 +2,7 @@ type ReservationRecord = {
   id: string;
   name: string;
   phone: string;
+  email: string; 
   date: Date;
   time: string;
   comments?: string;
@@ -14,6 +15,7 @@ type SerializableReservation = {
   id: string;
   name: string;
   phone: string;
+  email: string; 
   date: string;
   time: string;
   comments?: string | null;
@@ -29,6 +31,7 @@ export function serializeReservation(item: ReservationRecord | null): Serializab
     id: item.id.toString(),
     name: item.name,
     phone: item.phone,
+    email: item.email, // new line
     date: item.date.toISOString(),
     time: item.time,
     comments: item.comments ?? null,

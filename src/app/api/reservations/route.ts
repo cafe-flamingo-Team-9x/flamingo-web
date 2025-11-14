@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
       data: {
         name: data.name,
         phone: data.phone,
+        email: data.email,
         date: new Date(data.date),
         time: data.time,
         comments: data.comments,

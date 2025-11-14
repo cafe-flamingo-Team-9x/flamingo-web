@@ -15,6 +15,7 @@ export function ReservationForm() {
     const [formData, setFormData] = useState({
         name: "",
         phone: "",
+        email: "", // new field
         date: undefined as Date | undefined,
         time: "18:00",
         comments: "",
@@ -31,6 +32,7 @@ export function ReservationForm() {
             const payload = {
                 name: formData.name,
                 phone: formData.phone,
+                email: formData.email, // send email to API
                 date: formData.date?.toISOString(),
                 time: formData.time,
                 comments: formData.comments,
@@ -48,7 +50,7 @@ export function ReservationForm() {
             setIsSubmitted(true);
 
             // Reset form
-            setFormData({ name: "", phone: "", date: undefined, time: "18:00", comments: "" });
+            setFormData({ name: "", phone: "", email: "", date: undefined, time: "18:00", comments: "" });
 
             // Hide message after 3 seconds
             setTimeout(() => setIsSubmitted(false), 3000);
@@ -123,6 +125,24 @@ export function ReservationForm() {
                         required
                     />
                 </div>
+            </div>
+
+            {/* New Email Field */}
+            <div className="space-y-2">
+                <label htmlFor="email" className="flex items-center text-sm font-medium text-foreground">
+                    <User className="w-4 h-4 mr-2 text-primary" />
+                    Email
+                </label>
+                <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="h-11 border-border/50 focus:border-primary/50 transition-colors"
+                    required
+                />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
