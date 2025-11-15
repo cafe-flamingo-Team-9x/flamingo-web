@@ -65,8 +65,8 @@ export default function AdminReservationPage() {
   const reservations = reservationQuery.data ?? [];
 
   return (
-    <section className="space-y-6">
-      <div className="flex items-center justify-between">
+    <section className="space-y-6 h-full flex flex-col">
+      <div className="flex items-center justify-between flex-shrink-0">
         <h1 className="text-3xl font-semibold text-primary flex items-center gap-2">
           <RefreshCcw className="h-6 w-6" />
           Reservation Management
@@ -87,54 +87,61 @@ export default function AdminReservationPage() {
           ))}
         </div>
       ) : reservations.length === 0 ? (
-        <div className="text-center text-muted-foreground">
+        <div className="text-center text-muted-foreground py-12">
           No reservations found.
         </div>
       ) : (
-        <ScrollArea className="max-h-[70vh] space-y-4">
-          {reservations.map((res) => (
-            <Card key={res.id} className="border-primary/30 hover:shadow-lg transition-all duration-150">
-              <CardHeader className="flex justify-between items-center pb-2">
-                <CardTitle className="text-lg">{res.guestName}</CardTitle>
-                <span
-                  className={`capitalize text-sm font-medium ${
-                    res.status === 'approved'
-                      ? 'text-green-600'
-                      : res.status === 'rejected'
-                      ? 'text-red-600'
-                      : 'text-muted-foreground'
-                  }`}
-                >
-                  {res.status}
-                </span>
-              </CardHeader>
-              <CardDescription>
-                {res.email} | {res.phone} | {res.date} at {res.time}
-              </CardDescription>
-              <CardContent className="flex gap-2 pt-3">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="flex-1 gap-2"
-                  onClick={() => handleAction(res.id, 'approved')}
-                  disabled={actionLoading === res.id || res.status !== 'pending'}
-                >
-                  <Check className="h-4 w-4" />
-                  Approve
-                </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  className="flex-1 gap-2"
-                  onClick={() => handleAction(res.id, 'rejected')}
-                  disabled={actionLoading === res.id || res.status !== 'pending'}
-                >
-                  <X className="h-4 w-4" />
-                  Reject
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+        <ScrollArea className="flex-1 h-[calc(100vh-250px)] pr-4">
+          <div className="space-y-4 pb-4">
+            {reservations.map((res) => (
+              <Card key={res.id} className="border-primary/30 hover:shadow-lg transition-all duration-150">
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-lg">{res.guestName}</CardTitle>
+                    <span
+                      className={`capitalize text-sm font-medium px-3 py-1 rounded-full ${
+                        res.status === 'approved'
+                          ? 'bg-green-100 text-green-700'
+                          : res.status === 'rejected'
+                          ? 'bg-red-100 text-red-700'
+                          : 'bg-gray-100 text-gray-700'
+                      }`}
+                    >
+                      {res.status}
+                    </span>
+                  </div>
+                  <CardDescription className="pt-1">
+                    {res.email} | {res.phone}
+                  </CardDescription>
+                  <CardDescription>
+                    {new Date(res.date).toLocaleDateString()} at {res.time}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex gap-2 pt-3">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 gap-2"
+                    onClick={() => handleAction(res.id, 'approved')}
+                    disabled={actionLoading === res.id || res.status !== 'pending'}
+                  >
+                    <Check className="h-4 w-4" />
+                    Approve
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="flex-1 gap-2"
+                    onClick={() => handleAction(res.id, 'rejected')}
+                    disabled={actionLoading === res.id || res.status !== 'pending'}
+                  >
+                    <X className="h-4 w-4" />
+                    Reject
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </ScrollArea>
       )}
     </section>
