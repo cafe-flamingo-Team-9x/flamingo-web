@@ -5,8 +5,8 @@ type ReservationRecord = {
   email: string; 
   date: Date;
   time: string;
-  comments?: string | null;
-  status: "pending" | "approved" | "rejected";
+  comments: string | null;
+  status: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -18,7 +18,7 @@ type SerializableReservation = {
   email: string; 
   date: string;
   time: string;
-  comments?: string | null;
+  comments: string | null;
   status: string;
   createdAt: string;
   updatedAt: string;

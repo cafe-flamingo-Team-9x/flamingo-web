@@ -22,6 +22,7 @@ export function ReservationForm() {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -71,6 +72,7 @@ export function ReservationForm() {
 
     const handleDateSelect = (date: Date | undefined) => {
         setFormData((prev) => ({ ...prev, date }));
+        setTimeout(() => setIsCalendarOpen(false), 0);
     };
 
     if (isSubmitted) {
@@ -151,7 +153,7 @@ export function ReservationForm() {
                         <CalendarIcon className="w-4 h-4 mr-2 text-primary" />
                         Date
                     </label>
-                    <Popover>
+                    <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                         <PopoverTrigger asChild>
                             <Button
                                 variant="outline"
