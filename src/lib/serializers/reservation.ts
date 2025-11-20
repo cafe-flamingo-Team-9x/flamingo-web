@@ -5,7 +5,7 @@ type ReservationRecord = {
   email: string; 
   date: Date;
   time: string;
-  comments?: string;
+  comments?: string | null;
   status: "pending" | "approved" | "rejected";
   createdAt: Date;
   updatedAt: Date;
@@ -24,7 +24,7 @@ type SerializableReservation = {
   updatedAt: string;
 };
 
-export function serializeReservation(item: ReservationRecord | null): SerializableReservation | null {
+export function serializeReservation(item: any): SerializableReservation | null {
   if (!item) return null;
 
   return {
@@ -34,7 +34,7 @@ export function serializeReservation(item: ReservationRecord | null): Serializab
     email: item.email, // new line
     date: item.date.toISOString(),
     time: item.time,
-    comments: item.comments ?? null,
+    comments: item.comments ?? undefined,
     status: item.status,
     createdAt: item.createdAt.toISOString(),
     updatedAt: item.updatedAt.toISOString(),

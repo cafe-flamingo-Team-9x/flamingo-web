@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
+    "postinstall": "prisma generate",
     "start": "next start",
     "lint": "biome check --log-kind=compact",
     "lint:fix": "biome check --write --reporter=summary --log-kind=compact",

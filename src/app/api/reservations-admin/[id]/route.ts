@@ -76,11 +76,11 @@ async function sendStatusEmailToUser(reservation: any, status: string) {
 // GET - Handle email link clicks (approve/reject)
 export async function GET(
   req: NextRequest, 
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const action = req.nextUrl.searchParams.get("action");
-    const { id } = params;
+    const { id } = await params;
 
     // Validate action
     if (!action || !["approved", "rejected"].includes(action)) {
@@ -158,10 +158,10 @@ export async function GET(
 // PATCH - Handle dashboard approve/reject
 export async function PATCH(
   req: NextRequest, 
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const { status } = await req.json();
 
     console.log(`🔄 Dashboard update: ${status} for reservation ${id}`);
