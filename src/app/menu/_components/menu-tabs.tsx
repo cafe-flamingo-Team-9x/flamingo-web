@@ -77,13 +77,12 @@ export default function MenuTabs({ categories, groups }: MenuTabsProps) {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         "[data-menu-card]",
-        { opacity: 0, y: 32, scale: 0.96, filter: "blur(6px)" },
+        { opacity: 0, y: 32, filter: "blur(6px)" },
         {
           opacity: 1,
           y: 0,
-          scale: 1,
           filter: "blur(0px)",
-          duration: 0.65,
+          duration: 0.75,
           ease: "power2.out",
           stagger: 0.08,
         },
@@ -97,17 +96,19 @@ export default function MenuTabs({ categories, groups }: MenuTabsProps) {
 
   return (
     <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value)} className="w-full">
-      <TabsList className="mx-auto mb-12 grid w-full max-w-2xl grid-cols-2 gap-2 rounded-full bg-white/10 p-1 backdrop-blur md:grid-cols-4">
-        {categories.map((category) => (
-          <TabsTrigger
-            key={category}
-            value={category}
-            className="rounded-full text-sm capitalize transition-all data-[state=active]:bg-white data-[state=active]:text-slate-900 md:text-base"
-          >
-            {category}
-          </TabsTrigger>
-        ))}
-      </TabsList>
+      <div className="mx-auto mb-12 w-full max-w-4xl overflow-x-auto pb-4 md:pb-0">
+        <TabsList className="inline-flex h-auto w-full min-w-max items-center justify-start gap-2 rounded-full bg-slate-100 p-1 md:w-auto md:min-w-0 md:justify-center">
+          {categories.map((category) => (
+            <TabsTrigger
+              key={category}
+              value={category}
+              className="rounded-full px-6 py-2 text-sm font-medium capitalize transition-all hover:bg-white/60 hover:text-slate-900 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm md:text-base"
+            >
+              {category}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </div>
 
       {groups.map(({ category, items }) => (
         <TabsContent key={category} value={category} className="focus-visible:outline-none">
@@ -168,15 +169,17 @@ function MenuCard({ item }: MenuCardProps) {
 
       <CardContent className="flex flex-1 flex-col gap-4 p-6">
         <div className="flex items-start justify-between gap-4">
-          <div>
+          <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold text-slate-900">{item.name}</h3>
             {item.description ? (
               <p className="mt-2 text-sm text-slate-600">{item.description}</p>
             ) : null}
           </div>
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
-            LKR {formatPrice(item.price)}
-          </span>
+          <div className="flex shrink-0 items-center justify-center rounded-full bg-primary/10 px-3 py-1.5 ml-2">
+            <span className="whitespace-nowrap text-sm font-bold text-primary">
+              LKR&nbsp;{formatPrice(item.price)}
+            </span>
+          </div>
         </div>
       </CardContent>
     </Card>

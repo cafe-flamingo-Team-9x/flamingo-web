@@ -79,8 +79,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const action = req.nextUrl.searchParams.get("action");
     const { id } = await params;
+    const action = req.nextUrl.searchParams.get("action");
 
     // Validate action
     if (!action || !["approved", "rejected"].includes(action)) {
