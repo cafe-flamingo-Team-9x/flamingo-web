@@ -15,6 +15,7 @@ export function ReservationForm() {
     const [formData, setFormData] = useState({
         name: "",
         phone: "",
+        email: "", // new field
         date: undefined as Date | undefined,
         time: "18:00",
         comments: "",
@@ -26,17 +27,39 @@ export function ReservationForm() {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        try {
+            // Prepare data for API
+            const payload = {
+                name: formData.name,
+                phone: formData.phone,
+                email: formData.email, // send email to API
+                date: formData.date?.toISOString(),
+                time: formData.time,
+                comments: formData.comments,
+            };
 
-        setIsSubmitting(false);
-        setIsSubmitted(true);
+            const res = await fetch("/api/reservations", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
 
-        // Reset form after 3 seconds
-        setTimeout(() => {
-            setIsSubmitted(false);
-            setFormData({ name: "", phone: "", date: undefined, time: "18:00", comments: "" });
-        }, 3000);
+            if (!res.ok) throw new Error("Failed to create reservation");
+
+            // Show confirmation message
+            setIsSubmitted(true);
+
+            // Reset form
+            setFormData({ name: "", phone: "", email: "", date: undefined, time: "18:00", comments: "" });
+
+            // Hide message after 3 seconds
+            setTimeout(() => setIsSubmitted(false), 3000);
+        } catch (err) {
+            console.error(err);
+            alert("There was an error submitting your reservation. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -68,9 +91,7 @@ export function ReservationForm() {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Name and Phone Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Name Field */}
                 <div className="space-y-2">
                     <label htmlFor="name" className="flex items-center text-sm font-medium text-foreground">
                         <User className="w-4 h-4 mr-2 text-primary" />
@@ -84,10 +105,10 @@ export function ReservationForm() {
                         value={formData.name}
                         onChange={handleChange}
                         className="h-11 border-border/50 focus:border-primary/50 transition-colors"
+                        required
                     />
                 </div>
 
-                {/* Phone Field */}
                 <div className="space-y-2">
                     <label htmlFor="phone" className="flex items-center text-sm font-medium text-foreground">
                         <Phone className="w-4 h-4 mr-2 text-primary" />
@@ -101,13 +122,30 @@ export function ReservationForm() {
                         value={formData.phone}
                         onChange={handleChange}
                         className="h-11 border-border/50 focus:border-primary/50 transition-colors"
+                        required
                     />
                 </div>
             </div>
 
-            {/* Date and Time Row */}
+            {/* New Email Field */}
+            <div className="space-y-2">
+                <label htmlFor="email" className="flex items-center text-sm font-medium text-foreground">
+                    <User className="w-4 h-4 mr-2 text-primary" />
+                    Email
+                </label>
+                <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="h-11 border-border/50 focus:border-primary/50 transition-colors"
+                    required
+                />
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Date Field */}
                 <div className="space-y-2">
                     <label className="flex items-center text-sm font-medium text-foreground">
                         <CalendarIcon className="w-4 h-4 mr-2 text-primary" />
@@ -122,7 +160,6 @@ export function ReservationForm() {
                                     !formData.date && "text-muted-foreground",
                                 )}
                             >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
                                 {formData.date ? format(formData.date, "PPP") : "Pick a date"}
                             </Button>
                         </PopoverTrigger>
@@ -138,7 +175,6 @@ export function ReservationForm() {
                     </Popover>
                 </div>
 
-                {/* Time Field */}
                 <div className="space-y-2">
                     <Label htmlFor="time" className="flex items-center text-sm font-medium text-foreground">
                         <Clock className="w-4 h-4 mr-2 text-primary" />
@@ -151,11 +187,11 @@ export function ReservationForm() {
                         value={formData.time}
                         onChange={handleChange}
                         className="h-11 border-border/50 focus:border-primary/50 transition-colors bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                        required
                     />
                 </div>
             </div>
 
-            {/* Comments Field */}
             <div className="space-y-2">
                 <label htmlFor="comments" className="flex items-center text-sm font-medium text-foreground">
                     <MessageSquare className="w-4 h-4 mr-2 text-primary" />
@@ -173,7 +209,6 @@ export function ReservationForm() {
                 />
             </div>
 
-            {/* Submit Button */}
             <Button
                 type="submit"
                 disabled={isSubmitting}
@@ -189,7 +224,6 @@ export function ReservationForm() {
                 )}
             </Button>
 
-            {/* Info Text */}
             <p className="text-center text-xs text-muted-foreground pt-1">
                 We'll confirm your reservation within 2 hours
             </p>

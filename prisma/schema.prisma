@@ -90,3 +90,16 @@ model GalleryItem {
   @@index([gCategory])
   @@index([visible])
 }
+
+model Reservation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  phone     String
+  email     String
+  date      DateTime
+  time      String
+  comments  String?
+  status    String   @default("pending") // pending, approved, rejected
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
