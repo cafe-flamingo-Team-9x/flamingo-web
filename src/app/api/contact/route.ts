@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(serializeMessage(message));
   } catch (err) {
     if (err instanceof z.ZodError) {
-      return NextResponse.json({ errors: err.errors }, { status: 400 });
+      return NextResponse.json({ errors: err.issues }, { status: 400 });
     }
     const errorMessage =
       err instanceof Error ? err.message : 'An error occurred';
