@@ -149,8 +149,10 @@ export default async function Gallery({ searchParams }: GalleryPageProps) {
   const paginationRange = buildPaginationRange(actualPage, totalPages);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen">
       <Navigation />
+
+      <main className="flex-grow">
 
       <section className="bg-gradient-dark pt-32 pb-16 text-white">
         <div className="container mx-auto px-4 text-center">
@@ -228,6 +230,8 @@ export default async function Gallery({ searchParams }: GalleryPageProps) {
           )}
         </div>
       </section>
+
+      </main>
 
       <Footer />
     </div>
