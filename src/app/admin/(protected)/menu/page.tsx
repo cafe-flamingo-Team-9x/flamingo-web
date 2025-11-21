@@ -77,6 +77,7 @@ import { Path, UseFormReturn, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { cn } from '@/lib/utils';
 import type { MenuItemDTO } from '@/lib/serializers/menu';
 import {
   menuItemCreateSchema,
@@ -757,7 +758,10 @@ export default function AdminMenuPage() {
             aria-label="Refresh"
             className="transition-transform duration-150 hover:-translate-y-0.5"
           >
-            <RefreshCcw className="h-4 w-4" aria-hidden />
+            <RefreshCcw
+              className={cn('h-4 w-4', menuQuery.isFetching && 'animate-spin')}
+              aria-hidden
+            />
           </Button>
 
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
