@@ -13,6 +13,7 @@ import {
   House,
   Image as ImageIcon,
   LogOut,
+  Mail,
   Menu as MenuIcon,
   PanelLeft,
   User,
@@ -775,6 +776,11 @@ const ADMIN_NAV_ITEMS: AdminNavItem[] = [
     label: 'Reservations',
     href: '/admin/reservations',
     icon: Calendar,
+  },
+  {
+    label: 'Messages',
+    href: '/admin/messages',
+    icon: Mail,
   },
   {
     label: 'Menu',

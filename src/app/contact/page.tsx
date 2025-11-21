@@ -36,7 +36,9 @@ export default function Contact() {
               <div className="flex flex-col">
                 <Card className="border border-border/50 shadow-md flex-1">
                   <CardHeader>
-                    <CardTitle className="text-2xl text-foreground font-heading">Get in Touch</CardTitle>
+                    <CardTitle className="text-2xl text-foreground font-heading">
+                      Get in Touch
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-5">
                     <div className="flex items-start gap-3">
@@ -81,7 +83,9 @@ export default function Contact() {
                         <Clock className="size-5 text-primary" />
                       </div>
                       <div>
-                        <p className="font-semibold text-foreground mb-1 font-heading">Opening Hours</p>
+                        <p className="font-semibold text-foreground mb-1 font-heading">
+                          Opening Hours
+                        </p>
                         <p className="text-muted-foreground text-sm">
                           Monday - Friday: 11:00 AM – 10:00 PM
                         </p>
@@ -92,8 +96,6 @@ export default function Contact() {
                     </div>
                   </CardContent>
                 </Card>
-
-
               </div>
 
               {/* Right Column - Contact Form */}
@@ -105,7 +107,9 @@ export default function Contact() {
             {/* Map Section - Full Width Below */}
             <Card className="overflow-hidden border border-border/50 shadow-md mt-8">
               <CardHeader>
-                <CardTitle className="text-2xl text-foreground font-heading">Find Us on the Map</CardTitle>
+                <CardTitle className="text-2xl text-foreground font-heading">
+                  Find Us on the Map
+                </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 <iframe
