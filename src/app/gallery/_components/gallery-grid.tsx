@@ -1,6 +1,4 @@
 "use client";
-
-import { gsap } from "gsap";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -13,6 +11,8 @@ import type { GalleryDisplayItem } from "../types";
 type GalleryGridProps = {
   items: GalleryDisplayItem[];
 };
+
+type GsapContext = ReturnType<(typeof import("gsap"))["gsap"]["context"]>;
 
 const GRID_IMAGE_SIZES =
   "(min-width: 1536px) 20vw, (min-width: 1280px) 22vw, (min-width: 1024px) 26vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw";
@@ -118,27 +118,47 @@ export default function GalleryGrid({ items }: GalleryGridProps) {
   }, []);
 
   useEffect(() => {
-    if (!gridRef.current || items.length === 0) {
-      return;
-    }
+    let ctx: GsapContext | null = null;
+    let isCancelled = false;
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        "[data-gallery-card]",
-        { opacity: 0, y: 32, filter: "blur(6px)" },
-        {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          duration: 0.75,
-          stagger: 0.08,
-          ease: "power2.out",
-        },
-      );
-    }, gridRef);
+    const runAnimation = async () => {
+      if (!gridRef.current || items.length === 0) {
+        return;
+      }
+
+      if (
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        return;
+      }
+
+      const { gsap } = await import("gsap");
+      if (!gridRef.current || isCancelled) {
+        return;
+      }
+
+      ctx = gsap.context(() => {
+        gsap.fromTo(
+          "[data-gallery-card]",
+          { opacity: 0, y: 32, filter: "blur(6px)" },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.75,
+            stagger: 0.08,
+            ease: "power2.out",
+          },
+        );
+      }, gridRef);
+    };
+
+    void runAnimation();
 
     return () => {
-      ctx.revert();
+      isCancelled = true;
+      ctx?.revert();
     };
   }, [items.length]);
 
