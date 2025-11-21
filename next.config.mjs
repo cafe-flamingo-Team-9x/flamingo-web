@@ -12,6 +12,7 @@ const nextConfig = {
                 hostname: 'encrypted-tbn0.gstatic.com',
             },
         ],
+        domains: ['images.unsplash.com'],
     },
     webpack: (config) => {
         config.module.rules.push({
