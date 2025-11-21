@@ -154,82 +154,82 @@ export default async function Gallery({ searchParams }: GalleryPageProps) {
 
       <main className="flex-grow">
 
-      <section className="bg-gradient-dark pt-32 pb-16 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="mb-6 text-5xl font-bold font-heading md:text-5xl">
-            Our <span className="text-gradient-accent">Gallery</span>
-          </h1>
-          <p className="mx-auto max-w-2xl text-xl text-white/80 leading-relaxed">
-            Take a visual journey through our culinary creations and inviting
-            atmosphere
-          </p>
-        </div>
-      </section>
+        <section className="bg-gradient-dark pt-32 pb-16 text-white">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="mb-6 text-5xl font-bold font-heading md:text-5xl">
+              Our <span className="text-gradient-accent">Gallery</span>
+            </h1>
+            <p className="mx-auto max-w-2xl text-xl text-white/80 leading-relaxed">
+              Take a visual journey through our culinary creations and inviting
+              atmosphere
+            </p>
+          </div>
+        </section>
 
-      <section className="bg-white py-16">
-        <div className="container mx-auto px-4">
-          <GalleryGrid items={items} />
+        <section className="bg-white py-16">
+          <div className="container mx-auto px-4">
+            <GalleryGrid items={items} />
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-12">
-              <Pagination>
-                <PaginationContent>
-                  {/* Previous Button */}
-                  <PaginationItem>
-                    {actualPage > 1 ? (
-                      <PaginationPrevious
-                        href={`/gallery?page=${actualPage - 1}`}
-                        className="bg-white text-slate-900 border-slate-900 hover:bg-slate-900 hover:text-white"
-                      />
-                    ) : (
-                      <PaginationPrevious className="pointer-events-none opacity-50 bg-white text-slate-400 border-slate-300" />
-                    )}
-                  </PaginationItem>
-
-                  {/* Page Numbers */}
-                  {paginationRange.map((pageItem, index) => (
-                    <PaginationItem
-                      key={`page-${typeof pageItem === 'number'
-                        ? pageItem
-                        : `ellipsis-${index}`
-                        }`}
-                    >
-                      {pageItem === 'ellipsis' ? (
-                        <PaginationEllipsis className="text-slate-900" />
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-12">
+                <Pagination>
+                  <PaginationContent>
+                    {/* Previous Button */}
+                    <PaginationItem>
+                      {actualPage > 1 ? (
+                        <PaginationPrevious
+                          href={`/gallery?page=${actualPage - 1}`}
+                          className="bg-white text-slate-900 border-slate-900 hover:bg-slate-900 hover:text-white"
+                        />
                       ) : (
-                        <PaginationLink
-                          href={`/gallery?page=${pageItem}`}
-                          isActive={pageItem === actualPage}
-                          className={
-                            pageItem === actualPage
-                              ? 'bg-slate-900 text-white border-slate-900 hover:bg-slate-800'
-                              : 'bg-white text-slate-900 border-slate-900 hover:bg-slate-900 hover:text-white'
-                          }
-                        >
-                          {pageItem}
-                        </PaginationLink>
+                        <PaginationPrevious className="pointer-events-none opacity-50 bg-white text-slate-400 border-slate-300" />
                       )}
                     </PaginationItem>
-                  ))}
 
-                  {/* Next Button */}
-                  <PaginationItem>
-                    {actualPage < totalPages ? (
-                      <PaginationNext
-                        href={`/gallery?page=${actualPage + 1}`}
-                        className="bg-white text-slate-900 border-slate-900 hover:bg-slate-900 hover:text-white"
-                      />
-                    ) : (
-                      <PaginationNext className="pointer-events-none opacity-50 bg-white text-slate-400 border-slate-300" />
-                    )}
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
-        </div>
-      </section>
+                    {/* Page Numbers */}
+                    {paginationRange.map((pageItem, index) => (
+                      <PaginationItem
+                        key={`page-${typeof pageItem === 'number'
+                          ? pageItem
+                          : `ellipsis-${index}`
+                          }`}
+                      >
+                        {pageItem === 'ellipsis' ? (
+                          <PaginationEllipsis className="text-slate-900" />
+                        ) : (
+                          <PaginationLink
+                            href={`/gallery?page=${pageItem}`}
+                            isActive={pageItem === actualPage}
+                            className={
+                              pageItem === actualPage
+                                ? 'bg-slate-900 text-white border-slate-900 hover:bg-slate-800'
+                                : 'bg-white text-slate-900 border-slate-900 hover:bg-slate-900 hover:text-white'
+                            }
+                          >
+                            {pageItem}
+                          </PaginationLink>
+                        )}
+                      </PaginationItem>
+                    ))}
+
+                    {/* Next Button */}
+                    <PaginationItem>
+                      {actualPage < totalPages ? (
+                        <PaginationNext
+                          href={`/gallery?page=${actualPage + 1}`}
+                          className="bg-white text-slate-900 border-slate-900 hover:bg-slate-900 hover:text-white"
+                        />
+                      ) : (
+                        <PaginationNext className="pointer-events-none opacity-50 bg-white text-slate-400 border-slate-300" />
+                      )}
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </div>
+        </section>
 
       </main>
 
