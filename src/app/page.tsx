@@ -54,8 +54,10 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen">
+    <div className="flex flex-col min-h-screen">
       <Navigation />
+
+      <main className="flex-grow">
 
       {/* Hero Section */}
       <section
@@ -152,6 +154,8 @@ export default function Home() {
 
       {/* Reservation Section */}
       <ReservationSection />
+
+      </main>
 
       <Footer />
     </div>

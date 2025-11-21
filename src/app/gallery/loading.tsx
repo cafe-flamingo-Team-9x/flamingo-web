@@ -6,8 +6,10 @@ const GRID_PLACEHOLDERS = Array.from({ length: 12 }, (_, index) => `gallery-skel
 
 export default function GalleryLoading() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white">
       <Navigation />
+
+      <main className="flex-grow">
 
       <section className="bg-gradient-dark pt-32 pb-16 text-white">
         <div className="container mx-auto px-4 text-center">
@@ -34,6 +36,8 @@ export default function GalleryLoading() {
           </div>
         </div>
       </section>
+
+      </main>
 
       <Footer />
     </div>

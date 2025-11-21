@@ -13,8 +13,10 @@ export const metadata = {
 
 export default function Contact() {
   return (
-    <div className="min-h-screen">
+    <div className="flex flex-col min-h-screen">
       <Navigation />
+
+      <main className="flex-grow">
 
       <section className="bg-gradient-dark pt-32 pb-16 text-white">
         <div className="container mx-auto px-4 text-center">
@@ -121,6 +123,8 @@ export default function Contact() {
           </div>
         </div>
       </section>
+
+      </main>
 
       <Footer />
     </div>

@@ -158,26 +158,32 @@ export default async function Menu() {
 
   if (categories.length === 0) {
     return (
-      <div className="min-h-screen">
+      <div className="flex flex-col min-h-screen">
         <Navigation />
-        <section className="bg-gradient-dark pt-32 pb-16 text-white">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="mb-6 text-5xl font-bold md:text-5xl">
-              Our <span className="text-gradient-accent">Menu</span>
-            </h1>
-            <p className="mx-auto max-w-2xl text-xl text-white/80">
-              We are curating our seasonal menu. Please check back soon for new dishes.
-            </p>
-          </div>
-        </section>
+
+        <main className="flex-grow">
+          <section className="bg-gradient-dark pt-32 pb-16 text-white">
+            <div className="container mx-auto px-4 text-center">
+              <h1 className="mb-6 text-5xl font-bold md:text-5xl">
+                Our <span className="text-gradient-accent">Menu</span>
+              </h1>
+              <p className="mx-auto max-w-2xl text-xl text-white/80">
+                We are curating our seasonal menu. Please check back soon for new dishes.
+              </p>
+            </div>
+          </section>
+        </main>
+
         <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="flex flex-col min-h-screen">
       <Navigation />
+
+      <main className="flex-grow">
 
       <section className="bg-gradient-dark pt-32 pb-16 text-white">
         <div className="container mx-auto px-4 text-center">
@@ -195,6 +201,8 @@ export default async function Menu() {
           <MenuTabs categories={categories} groups={categoryGroups} />
         </div>
       </section>
+
+      </main>
 
       <Footer />
     </div>
