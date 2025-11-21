@@ -188,10 +188,15 @@ function MenuItemForm({
                 <FormControl>
                   <Input
                     type="text"
-                    inputMode="decimal"
+                    inputMode="numeric"
                     placeholder="1950"
                     value={field.value ?? ''}
-                    onChange={(event) => field.onChange(event.target.value)}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      if (value === '' || /^\d+$/.test(value)) {
+                        field.onChange(value);
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
