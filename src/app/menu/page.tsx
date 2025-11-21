@@ -185,22 +185,22 @@ export default async function Menu() {
 
       <main className="flex-grow">
 
-      <section className="bg-gradient-dark pt-32 pb-16 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="mb-6 text-5xl font-bold md:text-5xl">
-            Our <span className="text-gradient-accent">Menu</span>
-          </h1>
-          <p className="mx-auto max-w-2xl text-xl text-white/80">
-            Explore our carefully curated selection of dishes crafted with the finest ingredients
-          </p>
-        </div>
-      </section>
+        <section className="bg-gradient-dark pt-32 pb-16 text-white">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="mb-6 text-5xl font-bold md:text-5xl">
+              Our <span className="text-gradient-accent">Menu</span>
+            </h1>
+            <p className="mx-auto max-w-2xl text-xl text-white/80">
+              Explore our carefully curated selection of dishes crafted with the finest ingredients
+            </p>
+          </div>
+        </section>
 
-      <section className="bg-background py-16">
-        <div className="container mx-auto px-4">
-          <MenuTabs categories={categories} groups={categoryGroups} />
-        </div>
-      </section>
+        <section className="bg-background py-16">
+          <div className="container mx-auto px-4">
+            <MenuTabs categories={categories} groups={categoryGroups} />
+          </div>
+        </section>
 
       </main>
 
