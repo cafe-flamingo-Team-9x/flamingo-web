@@ -51,6 +51,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -78,6 +86,7 @@ import {
 
 const MENU_BUCKET_KEY = 'flamingo-cafe/';
 const menuQueryKey = ['admin', 'menu-items'];
+const ITEMS_PER_PAGE = 12;
 
 type MenuItemFormValues = z.input<typeof menuItemCreateSchema>;
 
@@ -321,6 +330,7 @@ export default function AdminMenuPage() {
   const [statusFilter, setStatusFilter] = useState<
     'all' | 'visible' | 'hidden'
   >('all');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [createImageFile, setCreateImageFile] = useState<File | null>(null);
@@ -334,6 +344,10 @@ export default function AdminMenuPage() {
     useState(false);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItemDTO | null>(null);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter]);
 
   const createForm = useForm<MenuItemFormValues>({
     resolver: zodResolver(menuItemCreateSchema),
@@ -541,6 +555,33 @@ export default function AdminMenuPage() {
         );
       });
   }, [items, searchTerm, statusFilter]);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredItems.length / ITEMS_PER_PAGE)
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const paginatedItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredItems.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredItems, currentPage]);
+
+  const showingFrom = paginatedItems.length
+    ? (currentPage - 1) * ITEMS_PER_PAGE + 1
+    : 0;
+  const showingTo = paginatedItems.length
+    ? Math.min(filteredItems.length, showingFrom + paginatedItems.length - 1)
+    : 0;
+
+  const pageNumbers = useMemo(() => {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }, [totalPages]);
 
   const categories = useMemo(() => {
     return Array.from(new Set(items.map((item) => item.category))).sort();
@@ -887,7 +928,7 @@ export default function AdminMenuPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredItems.map((item) => (
+                  {paginatedItems.map((item) => (
                     <TableRow
                       key={item.id}
                       role="button"
@@ -1005,6 +1046,67 @@ export default function AdminMenuPage() {
                   ))}
                 </TableBody>
               </Table>
+              {filteredItems.length > ITEMS_PER_PAGE ? (
+                <div className="flex flex-col items-center gap-3 border-t border-border/70 bg-muted/10 px-4 py-3 text-center text-sm text-muted-foreground">
+                  <p>
+                    Showing {showingFrom}-{showingTo} of {filteredItems.length}{' '}
+                    items
+                  </p>
+                  <Pagination className="w-full justify-center">
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          href="#"
+                          className={
+                            currentPage === 1
+                              ? 'pointer-events-none opacity-50'
+                              : ''
+                          }
+                          onClick={(event) => {
+                            event.preventDefault();
+                            if (currentPage > 1) {
+                              setCurrentPage((prev) => Math.max(prev - 1, 1));
+                            }
+                          }}
+                        />
+                      </PaginationItem>
+                      {pageNumbers.map((pageNumber) => (
+                        <PaginationItem key={pageNumber}>
+                          <PaginationLink
+                            href="#"
+                            isActive={pageNumber === currentPage}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              setCurrentPage(pageNumber);
+                            }}
+                          >
+                            {pageNumber}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      <PaginationItem>
+                        <PaginationNext
+                          href="#"
+                          className={
+                            currentPage === totalPages ||
+                            filteredItems.length === 0
+                              ? 'pointer-events-none opacity-50'
+                              : ''
+                          }
+                          onClick={(event) => {
+                            event.preventDefault();
+                            if (currentPage < totalPages) {
+                              setCurrentPage((prev) =>
+                                Math.min(prev + 1, totalPages)
+                              );
+                            }
+                          }}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              ) : null}
             </div>
           )}
         </CardContent>

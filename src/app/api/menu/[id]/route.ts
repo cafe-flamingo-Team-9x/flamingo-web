@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import { Prisma } from '@prisma/client';
+import { getServerSession } from 'next-auth/next';
+import { type NextRequest, NextResponse } from 'next/server';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
-import { menuItemUpdateSchema } from '@/lib/validation/menu';
 import { serializeMenuItem } from '@/lib/serializers/menu';
+import { menuItemUpdateSchema } from '@/lib/validation/menu';
 
 async function ensureAdmin() {
   const session = await getServerSession(authOptions);
@@ -48,7 +48,15 @@ export async function GET(
     );
   }
 
-  return NextResponse.json({ data: serializeMenuItem(menuItem)! });
+  const serialized = serializeMenuItem(menuItem);
+  if (!serialized) {
+    return NextResponse.json(
+      { error: 'Failed to load menu item.' },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json({ data: serialized });
 }
 
 export async function PATCH(
@@ -88,7 +96,15 @@ export async function PATCH(
       data: parsed.data,
     });
 
-    return NextResponse.json({ data: serializeMenuItem(updated)! });
+    const serialized = serializeMenuItem(updated);
+    if (!serialized) {
+      return NextResponse.json(
+        { error: 'Failed to update menu item.' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ data: serialized });
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
