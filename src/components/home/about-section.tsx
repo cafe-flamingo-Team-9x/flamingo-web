@@ -20,9 +20,9 @@ export function AboutSection() {
     // Image carousel state
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const images = [
-        "/assets/restaurant-interior.jpg",
         "/assets/hero-dining.jpg",
         "/assets/food-main.jpg",
+        "/assets/food-dessert.jpg",
     ];
     const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -149,7 +149,7 @@ export function AboutSection() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
                     <div className="order-2 lg:order-1 space-y-5">
                         <div>
-                        <h2 ref={titleRef} className="text-3xl md:text-4xl font-bold text-foreground mb-4 font-heading">
+                            <h2 ref={titleRef} className="text-3xl md:text-4xl font-bold text-foreground mb-4 font-heading">
                                 About <span className="text-gradient-accent">Flamingo</span>
                             </h2>
                             <div

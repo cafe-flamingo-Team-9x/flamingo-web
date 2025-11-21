@@ -66,7 +66,7 @@ export default function Home() {
         >
           <div className="absolute inset-0">
             <Image
-              src="/assets/hero-dining.jpg"
+              src="/assets/hero.jpg"
               alt="Flamingo Restaurant Dining"
               fill
               className="object-cover"
