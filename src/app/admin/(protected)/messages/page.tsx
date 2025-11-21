@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Loader2, Mail, MessageSquare, Trash2 } from 'lucide-react';
+import { Loader2, Mail, MessageSquare, Trash2, RefreshCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -36,7 +36,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { formatDate } from '@/lib/utils';
+import { formatDate, cn } from '@/lib/utils';
 
 interface Message {
   id: string;
@@ -136,16 +136,10 @@ export default function MessagesPage() {
           onClick={fetchMessages}
           disabled={isLoading}
           variant="outline"
-          size="sm"
+          size="icon"
+          className="transition-transform duration-150 hover:-translate-y-0.5"
         >
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Loading...
-            </>
-          ) : (
-            'Refresh'
-          )}
+          <RefreshCcw className={cn('h-4 w-4', isLoading && 'animate-spin')} />
         </Button>
       </div>
 
